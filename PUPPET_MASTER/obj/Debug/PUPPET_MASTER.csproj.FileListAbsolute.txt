@@ -1,0 +1,9 @@
+C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\PUPPET_MASTER\bin\Debug\PUPPET_MASTER.exe.config
+C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\PUPPET_MASTER\bin\Debug\PUPPET_MASTER.exe
+C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\PUPPET_MASTER\bin\Debug\PUPPET_MASTER.pdb
+C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\PUPPET_MASTER\obj\Debug\PUPPET_MASTER.exe
+C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\PUPPET_MASTER\obj\Debug\PUPPET_MASTER.pdb
+C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\PUPPET_MASTER\obj\Debug\PUPPET_MASTER.csprojResolveAssemblyReference.cache
+C:\Users\artur\Desktop\DAD\PUPPET_MASTER\bin\Debug\PUPPET_MASTER.exe.config
+C:\Users\artur\Desktop\DAD\PUPPET_MASTER\obj\Debug\PUPPET_MASTER.exe
+C:\Users\artur\Desktop\DAD\PUPPET_MASTER\obj\Debug\PUPPET_MASTER.pdb
