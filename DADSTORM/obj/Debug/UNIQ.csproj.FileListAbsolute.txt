@@ -1,6 +1,0 @@
-C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\DADSTORM\bin\Debug\DADSTORM.exe.config
-C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\DADSTORM\obj\Debug\UNIQ.csprojResolveAssemblyReference.cache
-C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\DADSTORM\bin\Debug\DADSTORM.exe
-C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\DADSTORM\bin\Debug\DADSTORM.pdb
-C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\DADSTORM\obj\Debug\DADSTORM.exe
-C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\DADSTORM\obj\Debug\DADSTORM.pdb

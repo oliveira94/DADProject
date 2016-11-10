@@ -3,25 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.IO;
 
-namespace COUNT
+namespace Count
 {
-    static class Count
+    class count
     {
-       static private int x = 0;
-
         static void Main(string[] args)
         {
-            //testing git   gdgdfgfdgb
-        }
-
-       static public int count(List<string> tup) //gets a tup so it can count and emit it
-        {
-
-            x++;
-            return x;
+            
+            Console.WriteLine(args[0] + " criado com sucesso");
+            Console.ReadLine();
         }
     }
 }
