@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace INTERFACES
 {
-    public interface Icount_pcs
+    public interface Ipcs
     {
-         void create_replica(int rep_factor, string replica_URL);
+         void create_replica(int rep_factor, string replica_URL, string WhatOperator);
     }
     public interface Ipuppet_master
     {

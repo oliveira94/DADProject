@@ -14,6 +14,7 @@ namespace PUPPET_MASTER
 
         static string semantics;
         static string loggin_level;
+        static List<String> WhatOperator = new List<string>();
 
         public struct Operator
         {
@@ -47,7 +48,7 @@ namespace PUPPET_MASTER
 
             string line;
 
-            System.IO.StreamReader file = new System.IO.StreamReader(@"C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\conf_file.txt"); // Mudar o path para testar
+            System.IO.StreamReader file = new System.IO.StreamReader(@"C:\Users\artur\Documents\GitHub\FindSomethingElse\conf_file.txt"); // Mudar o path para testar
             while ((line = file.ReadLine()) != null)
             {
                 string[] words = line.Split(' ');
@@ -72,6 +73,19 @@ namespace PUPPET_MASTER
                         {
                             op1.address = op1.address + words[8 + i];
                         }
+                        WhatOperator.Add(words[8 + op1.rep_factor + 1]);
+                        break;
+
+                        //op1.operator_id = 1;
+                        //op1.input_ops = words[3];
+                        //op1.rep_factor = Int32.Parse(words[6]);
+                        //op1.routing = words[8];
+                        //op1.address = words[10];
+                        //for (int i = 1; i < op1.rep_factor; i++) // for para o apanhar o numero de URLs especificado em rep_factor (neste exemplo são 2)
+                        //{
+                        //    op1.address = op1.address + words[8 + i];
+                        //}
+                        //WhatOperator = words[8 + op1.rep_factor + 1];
                     }
                     else if (words[0] == "OP2")
                     {
@@ -82,8 +96,10 @@ namespace PUPPET_MASTER
                         op2.address = words[8];
                         for (int i = 1; i < op2.rep_factor; i++) // for para o apanhar o numero de URLs especificado em rep_factor 
                         {
-                            op1.address = op2.address + words[8 + i];
+                            op2.address = op2.address + words[8 + i];
                         }
+                        WhatOperator.Add(words[8 + op2.rep_factor + 1]);
+                        break;
                     }
                     else if (words[0] == "OP3")
                     {
@@ -96,7 +112,8 @@ namespace PUPPET_MASTER
                         {
                             op3.address = op3.address + words[8 + i];
                         }
-
+                        WhatOperator.Add(words[8 + op3.rep_factor + 1]);
+                        break;
                     }
                     else if (words[0] == "OP4")
                     {
@@ -107,9 +124,10 @@ namespace PUPPET_MASTER
                         op4.address = words[8];
                         for (int i = 1; i < op4.rep_factor; i++) // for para o apanhar o numero de URLs especificado em rep_factor 
                         {
-                            op1.address = op4.address + words[8 + i];
+                            op4.address = op4.address + words[8 + i];
                         }
-
+                        WhatOperator.Add(words[8 + op4.rep_factor + 1]);
+                        break;
                     }
 
                 }
@@ -118,27 +136,42 @@ namespace PUPPET_MASTER
 
         static public void create_replicas()
         {
-            Icount_pcs pcs_obj = (Icount_pcs)Activator.GetObject(typeof(Icount_pcs), "tcp://localhost:10000/count_pcs");
-            pcs_obj.create_replica(op4.rep_factor,op4.address); // mega basico
+            Ipcs pcs_obj = (Ipcs)Activator.GetObject(typeof(Ipcs), "tcp://localhost:10000/count_pcs");
+            //pcs_obj.create_replica(op4.rep_factor, op4.address);
 
-          
+            for (int i = 0; i < WhatOperator.Count; i++)
+            {
+                switch (WhatOperator[i])
+                {
+                    case "FILTER":
+                        pcs_obj.create_replica(op1.rep_factor, op1.address, WhatOperator[i]);
+                        break;
+                    case "CUSTOM":
+                        pcs_obj.create_replica(op2.rep_factor, op2.address, WhatOperator[i]);
+                        break;
+                    case "UNIQ":
+                        pcs_obj.create_replica(op3.rep_factor, op3.address, WhatOperator[i]);
+                        break;
+                    case "COUNT":
+                        pcs_obj.create_replica(op4.rep_factor, op4.address, WhatOperator[i]);
+                        break;
+                }
+            }
         }
-
-
 
         static public void print_var()
         {
 
-            Console.WriteLine("ALL VARS: -operator_id " + op1.operator_id + " -input:" + op1.input_ops + " -rep_fact:" + op1.rep_factor + " -routing:" + op1.routing + " -address:" + op1.address + " -operator:work in progressc"); // 
+            Console.WriteLine("ALL VARS: -operator_id " + op1.operator_id + " -input:" + op1.input_ops + " -rep_fact:" + op1.rep_factor + " -routing:" + op1.routing + " -address:" + op1.address + " -operator:work in progressc");
         }
-       
-   
-}
+
+
+    }
 
     public class puppet_master_object : MarshalByRefObject, Ipuppet_master
     {
-       
-           
+
+
     }
-    
+
 }

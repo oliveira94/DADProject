@@ -3,3 +3,8 @@ C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\INTERFACES\bin\Debug\INTERFACES.dll
 C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\INTERFACES\bin\Debug\INTERFACES.pdb
 C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\INTERFACES\obj\Debug\INTERFACES.dll
 C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\INTERFACES\obj\Debug\INTERFACES.pdb
+C:\Users\artur\Documents\GitHub\FindSomethingElse\INTERFACES\bin\Debug\INTERFACES.dll
+C:\Users\artur\Documents\GitHub\FindSomethingElse\INTERFACES\bin\Debug\INTERFACES.pdb
+C:\Users\artur\Documents\GitHub\FindSomethingElse\INTERFACES\obj\Debug\INTERFACES.csprojResolveAssemblyReference.cache
+C:\Users\artur\Documents\GitHub\FindSomethingElse\INTERFACES\obj\Debug\INTERFACES.dll
+C:\Users\artur\Documents\GitHub\FindSomethingElse\INTERFACES\obj\Debug\INTERFACES.pdb
