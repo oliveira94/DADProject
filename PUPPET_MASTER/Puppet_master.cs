@@ -9,7 +9,7 @@ using INTERFACES;
 
 namespace PUPPET_MASTER
 {
-    class Puppet_master
+    static class Puppet_master
     {
 
         static string semantics;

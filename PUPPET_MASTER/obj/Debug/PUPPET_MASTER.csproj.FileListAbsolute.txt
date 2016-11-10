@@ -6,3 +6,6 @@ C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\PUPPET_MASTER\obj\Debug\PUPPET_MASTE
 C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\PUPPET_MASTER\obj\Debug\PUPPET_MASTER.pdb
 C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\PUPPET_MASTER\bin\Debug\INTERFACES.dll
 C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\PUPPET_MASTER\bin\Debug\INTERFACES.pdb
+C:\Users\artur\Documents\GitHub\FindSomethingElse\PUPPET_MASTER\bin\Debug\PUPPET_MASTER.exe.config
+C:\Users\artur\Documents\GitHub\FindSomethingElse\PUPPET_MASTER\obj\Debug\PUPPET_MASTER.exe
+C:\Users\artur\Documents\GitHub\FindSomethingElse\PUPPET_MASTER\obj\Debug\PUPPET_MASTER.pdb
