@@ -1,7 +1,0 @@
-C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\Count\bin\Debug\Count.exe.config
-C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\Count\bin\Debug\Count.exe
-C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\Count\bin\Debug\Count.pdb
-C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\Count\obj\Debug\Count.exe
-C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\Count\obj\Debug\Count.pdb
-C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\Count\bin\Debug\Count.exe.CodeAnalysisLog.xml
-C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\Count\bin\Debug\Count.exe.lastcodeanalysissucceeded

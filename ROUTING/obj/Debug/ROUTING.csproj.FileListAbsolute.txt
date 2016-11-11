@@ -1,6 +1,0 @@
-C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\ROUTING\bin\Debug\ROUTING.exe.config
-C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\ROUTING\bin\Debug\ROUTING.exe
-C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\ROUTING\bin\Debug\ROUTING.pdb
-C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\ROUTING\obj\Debug\ROUTING.csprojResolveAssemblyReference.cache
-C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\ROUTING\obj\Debug\ROUTING.exe
-C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\ROUTING\obj\Debug\ROUTING.pdb

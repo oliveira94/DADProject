@@ -1,8 +1,0 @@
-C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\COUNT_PCS\bin\Debug\COUNT_PCS.exe.config
-C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\COUNT_PCS\bin\Debug\COUNT_PCS.exe
-C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\COUNT_PCS\bin\Debug\COUNT_PCS.pdb
-C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\COUNT_PCS\bin\Debug\INTERFACES.dll
-C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\COUNT_PCS\bin\Debug\INTERFACES.pdb
-C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\COUNT_PCS\obj\Debug\COUNT_PCS.csprojResolveAssemblyReference.cache
-C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\COUNT_PCS\obj\Debug\COUNT_PCS.exe
-C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\COUNT_PCS\obj\Debug\COUNT_PCS.pdb
