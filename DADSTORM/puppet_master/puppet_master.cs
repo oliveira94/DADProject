@@ -77,7 +77,7 @@ namespace puppet_master
                             op1.address = op1.address + words[8 + i];
                         }
 
-                        op1.operator_spec = words[8 + op1.rep_factor + 1]; // guardamos o tipo de operador MAYBE WRONG
+                        op1.operator_spec = words[8 + op1.rep_factor + 1]; // guardamos o tipo de operador 
                         if (!op1.operator_spec.Equals("COUNT")) // Se o tipo for diferente de "count" significa que ainda falta concatenar os parametros
                         {
                             op1.operator_spec = op1.operator_spec + ":" + words[(8 + op1.rep_factor + 1) + 1]; //concatenamos o tipo de operador com os seus parametros
