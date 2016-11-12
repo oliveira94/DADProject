@@ -50,7 +50,7 @@ namespace puppet_master
 
             string line;
 
-            System.IO.StreamReader file = new System.IO.StreamReader(@"C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\DADSTORM\conf_file.txt"); // Mudar o path para testar
+            System.IO.StreamReader file = new System.IO.StreamReader(@"C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\conf_file.txt"); // Mudar o path para testar
             while ((line = file.ReadLine()) != null)
             {
                 string[] words = line.Split(' ');
@@ -77,10 +77,10 @@ namespace puppet_master
                             op1.address = op1.address + words[8 + i];
                         }
 
-                        op1.operator_spec = words[8 + op1.rep_factor + 1]; // guardamos o tipo de operador
+                        op1.operator_spec = words[8 + op1.rep_factor + 1]; // guardamos o tipo de operador MAYBE WRONG
                         if (!op1.operator_spec.Equals("COUNT")) // Se o tipo for diferente de "count" significa que ainda falta concatenar os parametros
                         {
-                            op1.operator_spec = op1.operator_spec + ":" + words[(8 + op2.rep_factor + 1) + 1]; //concatenamos o tipo de operador com os seus parametros
+                            op1.operator_spec = op1.operator_spec + ":" + words[(8 + op1.rep_factor + 1) + 1]; //concatenamos o tipo de operador com os seus parametros
                         }
                     }
                     else if (words[0] == "OP2")
