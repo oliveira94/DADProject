@@ -40,7 +40,6 @@ namespace pcs
     {
         public void create_replica(int rep_factor, string replica_URL, string WhatOperator, int op_id)
         {
-         
             string path = Directory.GetCurrentDirectory();
             path = path.Remove(path.Length - 13);
             path = path + @"operator\bin\Debug\@operator.exe"; //acertamos o caminho onde está o executável de operador
@@ -51,8 +50,7 @@ namespace pcs
             {
                Process.Start(path, aux[i] + "|" + WhatOperator +"|"+ op_id); //criamos processos operador, passando o seu URL, o tipo de operador com parametros(caso existam) e o id
                                    
-             }
-            
+            } 
         }
     }
 }

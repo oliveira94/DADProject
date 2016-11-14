@@ -9,3 +9,11 @@ C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\DADSTORM\pcs\obj\Debug\pcs.pdb
 C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\pcs\bin\Debug\pcs.exe.config
 C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\pcs\obj\Debug\pcs.exe
 C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\pcs\obj\Debug\pcs.pdb
+\\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\pcs\bin\Debug\pcs.exe.config
+\\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\pcs\obj\Debug\pcs.exe
+\\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\pcs\obj\Debug\pcs.pdb
+\\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\pcs\bin\Debug\pcs.exe
+\\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\pcs\bin\Debug\pcs.pdb
+\\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\pcs\bin\Debug\remotig_interfaces.dll
+\\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\pcs\bin\Debug\remotig_interfaces.pdb
+\\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\pcs\obj\Debug\pcs.csprojResolveAssemblyReference.cache

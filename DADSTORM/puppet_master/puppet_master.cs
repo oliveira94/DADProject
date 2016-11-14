@@ -50,7 +50,7 @@ namespace puppet_master
 
             string line;
 
-            System.IO.StreamReader file = new System.IO.StreamReader(@"C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\DADSTORM\conf_file.txt"); // Mudar o path para testar
+            System.IO.StreamReader file = new System.IO.StreamReader(@"\\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\conf_file.txt"); // Mudar o path para testar
             while ((line = file.ReadLine()) != null)
             {
                 string[] words = line.Split(' ');
@@ -170,10 +170,8 @@ namespace puppet_master
             Console.WriteLine("-operator_id " + op2.operator_id + " -input:" + op2.input_ops + " -rep_fact:" + op2.rep_factor + " -routing:" + op2.routing + " -address:" + op2.address + " -operator:" + op2.operator_spec + "\r\n");
             Console.WriteLine("-operator_id " + op3.operator_id + " -input:" + op3.input_ops + " -rep_fact:" + op3.rep_factor + " -routing:" + op3.routing + " -address:" + op3.address + " -operator:" + op3.operator_spec + "\r\n");
             Console.WriteLine("-operator_id " + op4.operator_id + " -input:" + op4.input_ops + " -rep_fact:" + op4.rep_factor + " -routing:" + op4.routing + " -address:" + op4.address + " -operator:" + op4.operator_spec + "\r\n");
-
-
-
         }
+
         public static void OnExit(IAsyncResult ar)
         {
             Console.WriteLine("Function has returned");    
