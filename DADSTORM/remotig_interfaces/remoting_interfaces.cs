@@ -15,5 +15,10 @@ namespace remoting_interfaces
     {
 
     }
+
+    public interface IfileToOperator
+    {
+        IList<IList<string>> CustomOperation(IList<string> l);
+    }
     //needs an interface to allow operators communicate with pcs!!!!
 }

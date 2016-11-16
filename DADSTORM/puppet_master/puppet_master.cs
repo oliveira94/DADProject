@@ -50,11 +50,8 @@ namespace puppet_master
 
             string line;
 
-<<<<<<< HEAD
             System.IO.StreamReader file = new System.IO.StreamReader(@"\\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\conf_file.txt"); // Mudar o path para testar
-=======
-            System.IO.StreamReader file = new System.IO.StreamReader(@"C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\conf_file.txt"); // Mudar o path para testar
->>>>>>> origin/master
+
             while ((line = file.ReadLine()) != null)
             {
                 string[] words = line.Split(' ');
