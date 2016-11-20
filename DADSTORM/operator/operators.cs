@@ -8,6 +8,7 @@ using System.Runtime.Remoting.Channels.Tcp;
 using System.Threading.Tasks;
 using remoting_interfaces;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 
 
@@ -80,11 +81,12 @@ namespace @operator
             start_processing();                        // tenta processa-lo
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)] // este metodo tem que ser sincronizado para evitar que a queue esteja a ser processada pela função input_queue() e start_processing() ao mesmo tempo (ex. O operador tem uma queue grande, depois o pupet master faz start e o Operador fica a processar essa queue em start_processing(), e enquanto o operador anterior manda tuplos por input_queue())
         public void start_processing()
         {
             while(start && queue.Count > 0)           
             {
-                for (int i=0; i < queue.Count; i++)        //processa tuplos sempre que a queue não esteja vazia e que o pupet master tenha colocado a variávels start a true
+                for (int i=(queue.Count -1); i >= 0 ; i--)  //processa tuplos sempre que a queue não esteja vazia e que o pupet master tenha colocado a variávels start a true
                 {
                     teste_processa(queue[i]);     //processa o tuplo; o processamento real seria buscar o valor de args[1] para ver qual é este operador, e enviar para a função de processamento correspondente (DUP, FILTER...)      
                     queue.RemoveAt((queue.Count) - 1);  //Remove o ultimo tuplo da lista de queue (já foi processado)
