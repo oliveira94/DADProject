@@ -38,7 +38,7 @@ namespace pcs
 
     public class pcs_object : MarshalByRefObject, Ipcs
     {
-        public void create_replica(int rep_factor, string replica_URL, string WhatOperator, int op_id)
+        public void create_replica(int rep_factor, string replica_URL, string whatoperator, string op_id)
         {
             string path = Directory.GetCurrentDirectory();
             path = path.Remove(path.Length - 13);
@@ -48,7 +48,7 @@ namespace pcs
           
             for (int i = 0; i < rep_factor; i++) //para criar o numero de processos especificado por rep_factor
             {
-               Process.Start(path, aux[i] + "|" + WhatOperator +"|"+ op_id); //criamos processos operador, passando o seu URL, o tipo de operador com parametros(caso existam) e o id
+               Process.Start(path, aux[i] + " " + whatoperator + " "+ op_id); //criamos processos operador, passando o seu URL, o tipo de operador com parametros(caso existam) e o id
                                    
             } 
         }

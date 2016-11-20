@@ -8,3 +8,8 @@ C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\DADSTORM\operator\obj\Debug\@operato
 C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\operator\bin\Debug\@operator.exe.config
 C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\operator\obj\Debug\@operator.exe
 C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\operator\obj\Debug\@operator.pdb
+C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\operator\bin\Debug\@operator.exe
+C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\operator\bin\Debug\@operator.pdb
+C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\operator\bin\Debug\remotig_interfaces.dll
+C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\operator\bin\Debug\remotig_interfaces.pdb
+C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\operator\obj\Debug\operator.csprojResolveAssemblyReference.cache
