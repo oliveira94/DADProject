@@ -216,24 +216,20 @@ namespace puppet_master
             if (command.Equals("start OP1"))
             {
                 op_obj1.read_repository(op1.input_ops);
-                op_obj1.set_start();
-                op_obj1.start_processing();             
+                op_obj1.set_start();             
                
             }
             else if (command.Equals("start OP2"))
             {
                 op_obj2.set_start();
-                op_obj2.start_processing();
             }
             else if (command.Equals("start OP3"))
             {
                 op_obj3.set_start();
-                op_obj3.start_processing();
             }
             else if (command.Equals("start OP4"))
             {
                 op_obj4.set_start();
-                op_obj4.start_processing();
             }
         }
 
