@@ -89,7 +89,7 @@ namespace @operator
             }
             else
             {
-                teste_processa(tuple);                     //caso não exista uma fila e o estado for ativo o tuplo é processado
+                teste_processa(tuple);                     //caso não exista uma fila e o estado for ativo o tuplo é processado; O processamento real seria buscar o valor de args[1] para ver qual é este operador, e enviar para a função de processamento correspondente (DUP, FILTER...) 
             }
 
         }
