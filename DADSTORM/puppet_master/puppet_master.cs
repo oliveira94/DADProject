@@ -60,7 +60,7 @@ namespace puppet_master
 
             string line;
 
-            System.IO.StreamReader file = new System.IO.StreamReader(@"C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\conf_file.txt"); // Mudar o path para testar
+            System.IO.StreamReader file = new System.IO.StreamReader(@"\\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\conf_file.txt"); // Mudar o path para testar
 
             while ((line = file.ReadLine()) != null)
             {
@@ -91,7 +91,7 @@ namespace puppet_master
                         op1.operator_spec = words[8 + op1.rep_factor + 1]; // guardamos o tipo de operador 
                         if (!op1.operator_spec.Equals("COUNT")) // Se o tipo for diferente de "count" significa que ainda falta concatenar os parametros
                         {
-                            op1.operator_spec = op1.operator_spec + ":" + words[(8 + op1.rep_factor + 1) + 1]; //concatenamos o tipo de operador com os seus parametros
+                            op1.operator_spec = op1.operator_spec + "," + words[(8 + op1.rep_factor + 1) + 1]; //concatenamos o tipo de operador com os seus parametros
                         }
                     }
                     else if (words[0] == "OP2")
@@ -110,7 +110,7 @@ namespace puppet_master
                         op2.operator_spec = words[8 + op2.rep_factor + 1]; 
                         if (!op2.operator_spec.Equals("COUNT"))  
                         {
-                            op2.operator_spec = op2.operator_spec + ":" + words[(8 + op2.rep_factor + 1) + 1]; 
+                            op2.operator_spec = op2.operator_spec + "," + words[(8 + op2.rep_factor + 1) + 1]; 
                         }
                     }
                     else if (words[0] == "OP3")
@@ -129,7 +129,7 @@ namespace puppet_master
                         op3.operator_spec = words[8 + op3.rep_factor + 1];
                         if (!op3.operator_spec.Equals("COUNT"))
                         {
-                            op3.operator_spec = op3.operator_spec + ":" + words[(8 + op3.rep_factor + 1) + 1];
+                            op3.operator_spec = op3.operator_spec + "," + words[(8 + op3.rep_factor + 1) + 1];
                         }
                     }
                     else if (words[0] == "OP4")
@@ -147,7 +147,7 @@ namespace puppet_master
                         op4.operator_spec = words[8 + op4.rep_factor + 1];
                         if (!op4.operator_spec.Equals("COUNT"))
                         {
-                            op4.operator_spec = op4.operator_spec + ":" + words[(8 + op4.rep_factor + 1) + 1];
+                            op4.operator_spec = op4.operator_spec + "," + words[(8 + op4.rep_factor + 1) + 1];
                         }
                     }
 
@@ -215,7 +215,7 @@ namespace puppet_master
         {
             if (command.Equals("start OP1"))
             {
-                op_obj1.read_repository(op1.input_ops);
+                op_obj1.read_repository(op1.input_ops, op1.operator_spec);
                 op_obj1.set_start();             
                
             }
@@ -244,7 +244,7 @@ namespace puppet_master
 
         public static void OnExit(IAsyncResult ar)
         {
-            Console.WriteLine("Function has returned");    
+            Console.WriteLine("Functiodfdfdn has returned");    
         }
 
 

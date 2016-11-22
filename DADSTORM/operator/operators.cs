@@ -22,6 +22,8 @@ namespace @operator
         List<String> tuplos = new List<String>();
         static opObject operatorObject;
 
+        public string pathDir = "";
+
         static void Main(string[] args)
         {
             Console.WriteLine(args[2] + " com url: "+ args[0] + " criado com sucesso");
@@ -91,12 +93,8 @@ namespace @operator
             {
                 teste_processa(tuple);                     //caso não exista uma fila e o estado for ativo o tuplo é processado; O processamento real seria buscar o valor de args[1] para ver qual é este operador, e enviar para a função de processamento correspondente (DUP, FILTER...) 
             }
-
         }
-        
-      
 
-    
         public void teste_processa(List<string> tp) // imprime o tuplo e envia para a queue do proximo operador(caso exista)
         {
             Console.Write("Tuplo-");
@@ -112,69 +110,98 @@ namespace @operator
             }        
         }
 
-        public void read_repository(string path)
+        public void read_repository(string path, string op_spec)
         {
-            
+
+            string[] words = op_spec.Split(',');
+
             string final_path = Directory.GetCurrentDirectory();
-            final_path.Remove(final_path.Length - 18);
+            final_path.Remove(final_path.Length - 40);
             final_path = final_path + path;
             Console.WriteLine("Repository at: " + path);
             
             List<string> tup_test = new List<string>(); // vai criar um tuplo de teste e colocar na sua queue (esta é uma função do OP1)
-            tup_test.Add("Este");
-            tup_test.Add("é");
-            tup_test.Add("um");
-            tup_test.Add("teste");
+
+            if (words[0] == "FILTER")
+            {
+                FILTER filter = new FILTER();
+                filter.doTweeters(words[3], path);
+                List<List<String>> teste = filter.getTweeters(words[3], path);
+
+                foreach (List<string> subList in teste)
+                {
+                    foreach (string item in subList)
+                    {
+                        tup_test.Add(item);
+                        //Console.WriteLine(item);
+                    }
+                }
+            }
+
+
+            
+            //tup_test.Add("teste");
             input_queue(tup_test);
         }
        
 
         class FILTER : operators
         {
+            public static Dictionary<string, List<string>> dictForTweeters =
+                new Dictionary<string, List<string>>();
+            public static bool dictTweet = false;
 
-            int field_number, condition, value;
-
-            //ﬁeld number, condition, value: emit the input tuple if ﬁeld number is larger(”>”), smaller(”<”) or equal(”=”) than value. 
-            public FILTER(int field_number, int condition, int value)
+            public void doTweeters(string url, string path)
             {
-                this.field_number = field_number;
-                this.condition = condition;
-                this.value = value;
+                string tweetersFilepath = @"\\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\" + path;
+
+                System.IO.StreamReader tweetersFile =
+                new System.IO.StreamReader(tweetersFilepath, true);
+
+                string line = tweetersFile.ReadLine();
+                List<string> tweeters = new List<string>();
+                while (line != null)
+                {
+
+                    if (line[0] != '%')
+                    {
+                        string[] tokens = line.Split(',');
+
+                        if (tokens[2].Contains(url))
+                        {
+                            tweeters.Add(tokens[1]);
+                        }
+                    }
+
+                    line = tweetersFile.ReadLine();
+                }
+                dictForTweeters.Add(url, tweeters);
+                dictTweet = true;
             }
 
-            //after input the field number, the condition and the value, we will get a subset of tuples
-            // i'm assuming that the tuples are ints just to simplify a possible implementation
-            /*  int analyse(List<int> returnedTuplos)
-              {
-                  for (int i = 0; i < returnedTuplos.Count; i++)
-                  {
-                      if (returnedTuplos[i] < value)
-                          condition = -1;
-                      if (returnedTuplos[i] > value)
-                          condition = 1;
+            public List<List<string>> getTweeters(string url, string path)
+            {
+                List<List<string>> outputTuples = new List<List<string>>();
+                List<string> tuple;
 
-                      switch (condition)
-                      {
-                          //when condition is <
-                          case -1:
-                              return returnedTuplos[i];
-                              break;
-                          //when conditiob is >
-                          case 1:
-                              return returnedTuplos[i];
-                              break;
-                          //when condition is =
-                          default:
-                              return returnedTuplos[i];
-                              break;
-                      }
-                  }
-              }
-         */   
-       }
+                if (!dictTweet) doTweeters(url, path);
+                if (dictForTweeters.ContainsKey(url))
+                {
+                    foreach (string tweeter in dictForTweeters[url])
+                    {
+                        tuple = new List<string>();
+                        tuple.Add(tweeter);
+                        outputTuples.Add(tuple);
+                    }
+                }
+                return outputTuples;
+            }
 
-            // where enter the followers.dat and the mylib.dll wheer
-            class CUSTOM : operators
+
+        }
+
+        // where enter the followers.dat and the mylib.dll wheer
+        class CUSTOM : operators
             {
               
             }
