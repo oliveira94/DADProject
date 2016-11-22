@@ -125,8 +125,8 @@ namespace @operator
             if (words[0] == "FILTER")
             {
                 FILTER filter = new FILTER();
-                filter.doTweeters(words[3], path);
-                List<List<String>> teste = filter.getTweeters(words[3], path);
+                filter.doTweeters(words[3], path,words[2], Int32.Parse(words[1]));
+                List<List<String>> teste = filter.getTweeters(words[3], path, words[2], Int32.Parse(words[1]));
 
                 foreach (List<string> subList in teste)
                 {
@@ -151,7 +151,7 @@ namespace @operator
                 new Dictionary<string, List<string>>();
             public static bool dictTweet = false;
 
-            public void doTweeters(string url, string path)
+            public void doTweeters(string url, string path, string condition, int value)
             {
                 string tweetersFilepath = @"\\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\" + path;
 
@@ -167,9 +167,26 @@ namespace @operator
                     {
                         string[] tokens = line.Split(',');
 
-                        if (tokens[2].Contains(url))
+                        if(condition == "<")
                         {
-                            tweeters.Add(tokens[1]);
+                            if (tokens[2].Contains(url) && Int32.Parse(tokens[0]) < value)
+                            {
+                                tweeters.Add(tokens[1]);
+                            }
+                        }
+                        if (condition == "=")
+                        {
+                            if (tokens[2].Contains(url) && Int32.Parse(tokens[0]) == value)
+                            {
+                                tweeters.Add(tokens[1]);
+                            }
+                        }
+                        if (condition == ">")
+                        {
+                            if (tokens[2].Contains(url) && Int32.Parse(tokens[0]) > value)
+                            {
+                                tweeters.Add(tokens[1]);
+                            }
                         }
                     }
 
@@ -179,12 +196,12 @@ namespace @operator
                 dictTweet = true;
             }
 
-            public List<List<string>> getTweeters(string url, string path)
+            public List<List<string>> getTweeters(string url, string path, string condition, int value)
             {
                 List<List<string>> outputTuples = new List<List<string>>();
                 List<string> tuple;
 
-                if (!dictTweet) doTweeters(url, path);
+                if (!dictTweet) doTweeters(url, path,  condition, value);
                 if (dictForTweeters.ContainsKey(url))
                 {
                     foreach (string tweeter in dictForTweeters[url])
