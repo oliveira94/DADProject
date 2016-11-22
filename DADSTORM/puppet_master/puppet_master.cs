@@ -217,15 +217,30 @@ namespace puppet_master
             List<string> output = new List<string>();
             if (command.Equals("start OP1"))
             {
-                List<string> lista = op_obj1.read_repository(op1.input_ops, op1.operator_spec);
-                output = lista;
+                if (op1.operator_spec.Contains("FILTER"))
+                {
+                    List<string> lista = op_obj1.read_repository(op1.input_ops, op1.operator_spec);
+                    output = lista;
+                }
+                else
+                {
+                    List<string> lista = op_obj1.read_listOfStrings(output, op1.operator_spec);
+                    output = lista;
+                }
                 op_obj1.set_start();             
             }
             else if (command.Equals("start OP2"))
             {
-                List<string> lista = op_obj2.readAndProcess_repository(output, op2.input_ops, op2.operator_spec);
-                output = lista;
-                op_obj2.set_start();
+                if (op2.operator_spec.Contains("FILTER"))
+                {
+                    List<string> lista = op_obj2.read_repository(op2.input_ops, op2.operator_spec);
+                    output = lista;
+                }
+                else
+                {
+                    List<string> lista = op_obj2.read_listOfStrings(output, op2.operator_spec);
+                    output = lista;
+                }
             }
             else if (command.Equals("start OP3"))
             {
@@ -250,14 +265,10 @@ namespace puppet_master
         {
             Console.WriteLine("Functiodfdfdn has returned");    
         }
-
-
     }
 
     public class puppet_master_object : MarshalByRefObject, Ipuppet_master
     {
 
-
     }
-
 }

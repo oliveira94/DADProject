@@ -21,7 +21,7 @@ namespace remoting_interfaces
         void input_queue(List<string> tuple);
         void set_start();
         List<string> read_repository(string input_ops, string operator_spec);
-        List<string> readAndProcess_repository(List<string> input, string op_spec);
+        List<string> read_listOfStrings(List<string> input, string op_spec);
     }
     public interface IfileToOperator
     {

@@ -110,6 +110,7 @@ namespace @operator
             }        
         }
 
+        //when the input of a operator is a directory/file
         public List<String> read_repository(string path, string op_spec)
         {
 
@@ -133,22 +134,21 @@ namespace @operator
                     foreach (string item in subList)
                     {
                         tup_test.Add(item);
-                        //Console.WriteLine(item);
                     }
                 }
             }
-
-            //tup_test.Add("teste");
             input_queue(tup_test);
             return tup_test;
         }
 
-        public List<string> readAndProcess_repository(List<string> input, string path, string op_spec) 
+        //when the input of a operator is a list of strings
+        public List<string> read_listOfStrings(List<string> input, string op_spec) 
         {
             foreach (string list in input)
             {
                 Console.WriteLine(list);
             }
+            input_queue(input);
             return input;
         }
        
