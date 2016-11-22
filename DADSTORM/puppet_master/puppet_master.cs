@@ -7,6 +7,7 @@ using System.Threading;
 using System.Collections.Generic;
 using remoting_interfaces;
 
+
 namespace puppet_master
 {
     static class Puppet_master
@@ -213,14 +214,17 @@ namespace puppet_master
 
         static void read_command(string command)
         {
+            List<string> output = new List<string>();
             if (command.Equals("start OP1"))
             {
-                op_obj1.read_repository(op1.input_ops, op1.operator_spec);
+                List<string> lista = op_obj1.read_repository(op1.input_ops, op1.operator_spec);
+                output = lista;
                 op_obj1.set_start();             
-               
             }
             else if (command.Equals("start OP2"))
             {
+                List<string> lista = op_obj2.readAndProcess_repository(output, op2.input_ops, op2.operator_spec);
+                output = lista;
                 op_obj2.set_start();
             }
             else if (command.Equals("start OP3"))

@@ -81,8 +81,8 @@ namespace @operator
                 teste_processa(queue[i]);                   // processa o primeiro elemento da fila
                 queue.RemoveAt(i);                          // remove-o da fila de espera
             }
-                 
         }
+
         public void input_queue(List<string> tuple)
         {
             if (!start || queue.Count > 0)                 // se existir uma fila de espera ou o estado do operador for inativo
@@ -110,7 +110,7 @@ namespace @operator
             }        
         }
 
-        public void read_repository(string path, string op_spec)
+        public List<String> read_repository(string path, string op_spec)
         {
 
             string[] words = op_spec.Split(',');
@@ -138,10 +138,18 @@ namespace @operator
                 }
             }
 
-
-            
             //tup_test.Add("teste");
             input_queue(tup_test);
+            return tup_test;
+        }
+
+        public List<string> readAndProcess_repository(List<string> input, string path, string op_spec) 
+        {
+            foreach (string list in input)
+            {
+                Console.WriteLine(list);
+            }
+            return input;
         }
        
 
