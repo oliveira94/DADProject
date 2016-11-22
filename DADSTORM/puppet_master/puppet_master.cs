@@ -241,6 +241,7 @@ namespace puppet_master
                     List<string> lista = op_obj2.read_listOfStrings(output, op2.operator_spec);
                     output = lista;
                 }
+                op_obj2.set_start();
             }
             else if (command.Equals("start OP3"))
             {

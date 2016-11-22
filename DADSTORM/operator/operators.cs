@@ -144,11 +144,26 @@ namespace @operator
         //when the input of a operator is a list of strings
         public List<string> read_listOfStrings(List<string> input, string op_spec) 
         {
+            string[] words = op_spec.Split(',');
+            if (words[0] == "CUSTOM")
+            {
+
+            }
+            if (words[0] == "UNIQ")
+            {
+
+            }
+            if (words[0] == "DUP")
+            {
+
+            }
+
             foreach (string list in input)
             {
                 Console.WriteLine(list);
             }
-            input_queue(input);
+
+            //input_queue(input);
             return input;
         }
        
