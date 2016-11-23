@@ -163,10 +163,10 @@ namespace @operator
 
             }
 
-            foreach (string list in input)
-            {
-                Console.WriteLine(list);
-            }
+            //foreach (string list in input)
+            //{
+            //    Console.WriteLine(list);
+            //}
 
             //input_queue(input);
             return receiveoutput;
@@ -286,15 +286,17 @@ namespace @operator
                                     arr4[0] = inputLista;
 
                                     result = (IList<IList<string>>)methodInfo.Invoke(classInstance, arr4);
-
+                                    Console.WriteLine(user);
                                     foreach (List<string> outputlist in result)
                                     {
                                         foreach (string output in outputlist)
                                         {
                                             outputUsers.Add(output);
                                             Console.WriteLine(output);
+                                            
                                         }
-                                    }
+                                        
+                                    } 
                                 }
                             }
                         }

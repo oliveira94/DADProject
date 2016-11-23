@@ -241,6 +241,9 @@ namespace puppet_master
                 {
                     List<string> teste = new List<string>();
                     teste.Add("user3");
+                    teste.Add("user4");
+                    teste.Add("user6");
+                    teste.Add("user3");
                     List<string> lista = op_obj2.read_listOfStrings(teste, op2.operator_spec);
                     output = lista;
                 }
