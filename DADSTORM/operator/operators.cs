@@ -9,8 +9,7 @@ using System.Threading.Tasks;
 using remoting_interfaces;
 using System.IO;
 using System.Runtime.CompilerServices;
-
-
+using System.Reflection;
 
 namespace @operator
 {
@@ -39,7 +38,6 @@ namespace @operator
             Console.ReadLine();
         }
     }
-
 
     //Receive tweeters.dat
     //This file contains the URLs sent by tweeters. 
@@ -97,11 +95,12 @@ namespace @operator
 
         public void teste_processa(List<string> tp) // imprime o tuplo e envia para a queue do proximo operador(caso exista)
         {
-            Console.Write("Tuplo-");
+            Console.Write("Input Tuplo: ");
             foreach(string s in tp)
             {
-                Console.Write(s+",");
+                Console.Write(s+" ");
             }
+           
             Console.WriteLine("\r\n");
 
             if (!next_url.Equals("nulo"))  //se houver proximo operador
@@ -145,9 +144,15 @@ namespace @operator
         public List<string> read_listOfStrings(List<string> input, string op_spec) 
         {
             string[] words = op_spec.Split(',');
+            List<string> receiveoutput = new List<string>();
+            
             if (words[0] == "CUSTOM")
-            {
-
+            { 
+                CUSTOM custom = new CUSTOM();
+                foreach(string user in input)
+                { 
+                    receiveoutput = custom.getoutput(words[1], words[3], user);
+                }
             }
             if (words[0] == "UNIQ")
             {
@@ -164,7 +169,7 @@ namespace @operator
             }
 
             //input_queue(input);
-            return input;
+            return receiveoutput;
         }
        
 
@@ -242,12 +247,65 @@ namespace @operator
 
         // where enter the followers.dat and the mylib.dll wheer
         class CUSTOM : operators
+        {
+            public List<String> getoutput(string dll, string method, string user)
             {
-              
+                List<string> outputUsers = new List<string>();
+                Assembly testDLL = Assembly.LoadFile(@"\\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\" + dll);
+
+                foreach (var type in testDLL.GetExportedTypes())
+                {
+                    MethodInfo[] members = type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.InvokeMethod);
+
+                    foreach (MemberInfo member in members)
+                    {
+                        //Console.WriteLine(type.Name + "." + member.Name);
+
+                        if (member.Name.Equals(method))
+                        {
+                            MethodInfo methodInfo = type.GetMethod(member.Name);
+
+                            if (methodInfo != null)
+                            {
+                                IList<IList<string>> result;
+                                ParameterInfo[] parameters = methodInfo.GetParameters();
+                                object classInstance = Activator.CreateInstance(type, null);
+
+                                if (parameters.Length == 0)
+                                {
+                                    result = (IList<IList<string>>)methodInfo.Invoke(classInstance, null);
+                                }
+                                else
+                                {
+                                    object[] arr4 = new object[1];
+
+                                    List<string> inputLista = new List<string>();
+                                    inputLista.Add("something");
+                                    inputLista.Add(user);
+
+                                    arr4[0] = inputLista;
+
+                                    result = (IList<IList<string>>)methodInfo.Invoke(classInstance, arr4);
+
+                                    foreach (List<string> outputlist in result)
+                                    {
+                                        foreach (string output in outputlist)
+                                        {
+                                            outputUsers.Add(output);
+                                            Console.WriteLine(output);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+                return outputUsers;
             }
+        }
 
-
-            class UNIQ : operators
+        class UNIQ : operators
             {           
                 int field_number;
 
@@ -271,7 +329,8 @@ namespace @operator
                   }
                  */
             }
-            class DUP : operators
+
+        class DUP : operators
             {
                 List<String> returnInput(List<String> tuple)
                 {

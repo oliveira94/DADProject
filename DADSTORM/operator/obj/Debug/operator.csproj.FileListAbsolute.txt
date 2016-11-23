@@ -21,3 +21,5 @@ C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\operator\obj\Debug\op
 \\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\operator\bin\Debug\remotig_interfaces.dll
 \\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\operator\bin\Debug\remotig_interfaces.pdb
 \\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\operator\obj\Debug\operator.csprojResolveAssemblyReference.cache
+\\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\operator\bin\Debug\LibDADStorm.dll
+\\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\operator\bin\Debug\mylib_nointerface.dll

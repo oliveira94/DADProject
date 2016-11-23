@@ -32,6 +32,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LibDADStorm">
+      <HintPath>..\..\..\..\..\Desktop\DAD professor\LibDADStorm.dll</HintPath>
+    </Reference>
+    <Reference Include="mylib">
+      <HintPath>..\..\..\..\mylib.dll</HintPath>
+    </Reference>
+    <Reference Include="mylib_nointerface">
+      <HintPath>..\..\..\..\..\Desktop\DAD professor\mylib_nointerface.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Remoting" />

@@ -215,6 +215,7 @@ namespace puppet_master
         static void read_command(string command)
         {
             List<string> output = new List<string>();
+            
             if (command.Equals("start OP1"))
             {
                 if (op1.operator_spec.Contains("FILTER"))
@@ -238,7 +239,9 @@ namespace puppet_master
                 }
                 else
                 {
-                    List<string> lista = op_obj2.read_listOfStrings(output, op2.operator_spec);
+                    List<string> teste = new List<string>();
+                    teste.Add("user3");
+                    List<string> lista = op_obj2.read_listOfStrings(teste, op2.operator_spec);
                     output = lista;
                 }
                 op_obj2.set_start();
