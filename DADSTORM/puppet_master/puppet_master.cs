@@ -61,7 +61,7 @@ namespace puppet_master
 
             string line;
 
-            System.IO.StreamReader file = new System.IO.StreamReader(@"\\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\conf_file.txt"); // Mudar o path para testar
+            System.IO.StreamReader file = new System.IO.StreamReader(@"..\..\..\conf_file.txt"); // Mudar o path para testar
 
             while ((line = file.ReadLine()) != null)
             {

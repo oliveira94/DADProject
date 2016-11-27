@@ -10,6 +10,7 @@ using remoting_interfaces;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Reflection;
+using System.Threading;
 
 namespace @operator
 {
@@ -25,8 +26,8 @@ namespace @operator
 
         static void Main(string[] args)
         {
-            Console.WriteLine(args[2] + " com url: "+ args[0] + " criado com sucesso");
-           
+            Console.WriteLine(args[2] + " com url: " + args[0] + " criado com sucesso");
+
             string[] words = args[0].Split(':'); //split url in order to get to port
             string[] words2 = words[2].Split('/');
             int port = Int32.Parse(words2[0]);
@@ -52,8 +53,12 @@ namespace @operator
         IOperator op_obj;
         static string next_url; //url do proximo operador
         static string next_op_spec; //tipo do proximo operador
-        static public bool start = false; 
-        List<List<string>> queue = new List<List<string>>(); 
+        static public bool start = false;
+        List<List<string>> queue = new List<List<string>>();
+
+        List<List<string>> in_queue = new List<List<string>>();
+        List<List<string>> out_queue = new List<List<string>>();
+
         IOperator obj; //objecto remoto no proximo operador
 
         public void next_op(string url, string op_spec)
@@ -65,19 +70,42 @@ namespace @operator
             if (!next_url.Equals("nulo"))
             {
                 obj = (IOperator)Activator.GetObject(typeof(IOperator), next_url); // cria um objeto remoto no proximo operador (caso existir)   
-            } 
-        
-            
+            }
+
+
         }
+
 
         public void set_start()
         {
-            int i = 0;
             start = true;
-            while(queue.Count > 0)
+
+            Thread inThread = new Thread(process_inQueue);
+            inThread.Start();
+
+            Thread outThread = new Thread(process_outQueue);
+            outThread.Start();
+        }
+
+        public void process_inQueue()
+        {
+            while (true)
             {
-                teste_processa(queue[i]);                   // processa o primeiro elemento da fila
-                queue.RemoveAt(i);                          // remove-o da fila de espera
+                if (in_queue[0] != null)
+                {
+                    teste_processa(in_queue[0]);
+                }
+            }
+        }
+
+        public void process_outQueue()
+        {
+            while (true)
+            {
+                if (!next_url.Equals("nulo"))
+                {
+                    obj.input_queue(out_queue[0]);                          
+                }
             }
         }
 
@@ -96,17 +124,17 @@ namespace @operator
         public void teste_processa(List<string> tp) // imprime o tuplo e envia para a queue do proximo operador(caso exista)
         {
             Console.Write("Input Tuplo: ");
-            foreach(string s in tp)
+            foreach (string s in tp)
             {
-                Console.Write(s+" ");
+                Console.Write(s + " ");
             }
-           
+
             Console.WriteLine("\r\n");
 
             if (!next_url.Equals("nulo"))  //se houver proximo operador
             {
                 obj.input_queue(tp);   // tem que ser assincrono para não ficar à espera do op2                             
-            }        
+            }
         }
 
         //when the input of a operator is a directory/file
@@ -119,13 +147,13 @@ namespace @operator
             final_path.Remove(final_path.Length - 40);
             final_path = final_path + path;
             Console.WriteLine("Repository at: " + path);
-            
+
             List<string> tup_test = new List<string>(); // vai criar um tuplo de teste e colocar na sua queue (esta é uma função do OP1)
 
             if (words[0] == "FILTER")
             {
                 FILTER filter = new FILTER();
-                filter.doTweeters(words[3], path,words[2], Int32.Parse(words[1]));
+                filter.doTweeters(words[3], path, words[2], Int32.Parse(words[1]));
                 List<List<String>> teste = filter.getTweeters(words[3], path, words[2], Int32.Parse(words[1]));
 
                 foreach (List<string> subList in teste)
@@ -141,16 +169,16 @@ namespace @operator
         }
 
         //when the input of a operator is a list of strings
-        public List<string> read_listOfStrings(List<string> input, string op_spec) 
+        public List<string> read_listOfStrings(List<string> input, string op_spec)
         {
             string[] words = op_spec.Split(',');
             List<string> receiveoutput = new List<string>();
-            
+
             if (words[0] == "CUSTOM")
-            { 
+            {
                 CUSTOM custom = new CUSTOM();
-                foreach(string user in input)
-                { 
+                foreach (string user in input)
+                {
                     receiveoutput = custom.getoutput(words[1], words[3], user);
                 }
             }
@@ -171,7 +199,7 @@ namespace @operator
             //input_queue(input);
             return receiveoutput;
         }
-       
+
 
         class FILTER : operators
         {
@@ -181,7 +209,7 @@ namespace @operator
 
             public void doTweeters(string url, string path, string condition, int value)
             {
-                string tweetersFilepath = @"\\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\" + path;
+                string tweetersFilepath = @"C:\Users\diogo\Documents\GitHub\FindSomethingElse\DADSTORM\" + path;
 
                 System.IO.StreamReader tweetersFile =
                 new System.IO.StreamReader(tweetersFilepath, true);
@@ -195,7 +223,7 @@ namespace @operator
                     {
                         string[] tokens = line.Split(',');
 
-                        if(condition == "<")
+                        if (condition == "<")
                         {
                             if (tokens[2].Contains(url) && Int32.Parse(tokens[0]) < value)
                             {
@@ -229,7 +257,7 @@ namespace @operator
                 List<List<string>> outputTuples = new List<List<string>>();
                 List<string> tuple;
 
-                if (!dictTweet) doTweeters(url, path,  condition, value);
+                if (!dictTweet) doTweeters(url, path, condition, value);
                 if (dictForTweeters.ContainsKey(url))
                 {
                     foreach (string tweeter in dictForTweeters[url])
@@ -251,7 +279,7 @@ namespace @operator
             public List<String> getoutput(string dll, string method, string user)
             {
                 List<string> outputUsers = new List<string>();
-                Assembly testDLL = Assembly.LoadFile(@"\\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\" + dll);
+                Assembly testDLL = Assembly.LoadFile(@"C:\Users\diogo\Documents\GitHub\FindSomethingElse\DADSTORM\" + dll);
 
                 foreach (var type in testDLL.GetExportedTypes())
                 {
@@ -293,10 +321,10 @@ namespace @operator
                                         {
                                             outputUsers.Add(output);
                                             Console.WriteLine(output);
-                                            
+
                                         }
-                                        
-                                    } 
+
+                                    }
                                 }
                             }
                         }
@@ -308,38 +336,43 @@ namespace @operator
         }
 
         class UNIQ : operators
-            {           
-                int field_number;
+        {
+            int field_number;
 
-                public UNIQ(int field_number)
-                {
-                    this.field_number = field_number;
-                }
-
-                // i'm assuming that the tuples are ints just to simplify a possible implementation
-                /*  int processTuple(List<int> tuple)
-                  {
-                      int returnValue = -1;
-                      for(int i = 0; i < tuple.Count; i++)
-                      {
-                          if (tuple[i] == field_number)
-                          {
-                              returnValue = tuple[i];
-                              return returnValue;
-                          }    
-                      }
-                  }
-                 */
+            public UNIQ(int field_number)
+            {
+                this.field_number = field_number;
             }
+
+            // i'm assuming that the tuples are ints just to simplify a possible implementation
+            /*  int processTuple(List<int> tuple)
+              {
+                  int returnValue = -1;
+                  for(int i = 0; i < tuple.Count; i++)
+                  {
+                      if (tuple[i] == field_number)
+                      {
+                          returnValue = tuple[i];
+                          return returnValue;
+                      }    
+                  }
+              }
+             */
+        }
 
         class DUP : operators
+        {
+            List<String> returnInput(List<String> tuple)
             {
-                List<String> returnInput(List<String> tuple)
-                {
-                    return tuple;
-                }
+                return tuple;
             }
+        }
+
+        class ThreadManager
+        {
+
+        }
     }
 
- }
+}
 
