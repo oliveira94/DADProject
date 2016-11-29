@@ -146,7 +146,7 @@ namespace puppet_master
                         }
 
                         op4.operator_spec = words[8 + op4.rep_factor + 1];
-                        if (!op4.operator_spec.Equals("COUNT"))
+                        if (!op4.operator_spec.Equals("COUNT") )
                         {
                             op4.operator_spec = op4.operator_spec + "," + words[(8 + op4.rep_factor + 1) + 1];
                         }
@@ -255,7 +255,7 @@ namespace puppet_master
             }
             else if (command.Equals("start OP4"))
             {
-                //op_obj4.set_start();
+                op_obj4.set_start(op4.operator_spec);
             }
         }
 

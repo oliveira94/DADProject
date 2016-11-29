@@ -119,7 +119,11 @@ namespace @operator
             in_queue.Add(tuple2);
             in_queue.Add(tuple3);
 
+            FILTER filter = new FILTER();
+            CUSTOM custom = new CUSTOM();
             UNIQ uniq = new UNIQ();
+            DUP dup = new DUP();
+            COUNT count = new COUNT();
 
             while (true)
             {
@@ -135,8 +139,8 @@ namespace @operator
 
                     if(words[0] == "FILTER")
                     {
-                        FILTER filter = new FILTER();
                         outTuple = filter.doTweeters(in_queue[0], Int32.Parse(words[1]), words[2], words[3]);
+                        out_queue.Add(outTuple);
                         in_queue.Remove(in_queue[0]);
                         Console.WriteLine("Output from Operator:");
                         Console.WriteLine(outTuple.id);
@@ -145,21 +149,48 @@ namespace @operator
                     }
                     if(words[0] == "CUSTOM")
                     {
-                        CUSTOM custom = new CUSTOM();
                         custom.getoutput(words[1], words[3], in_queue[0]);
                         in_queue.Remove(in_queue[0]);
                     }
                 
                     if(words[0] == "UNIQ")
                     {
-                        
                         outTuple = uniq.uniqTuple(in_queue[0], Int32.Parse(words[1]));
+                        out_queue.Add(outTuple);
                         Console.WriteLine("Output from Operator:");
                         Console.WriteLine(outTuple.id);
                         Console.WriteLine(outTuple.user);
                         Console.WriteLine(outTuple.URL);
                         in_queue.Remove(in_queue[0]);
                     }   
+                    if(words[0] == "DUP")
+                    {
+                        List<Tuple> duplicatedTuple = dup.duplicate(in_queue[0]);
+                        
+                        foreach (Tuple tuplo in duplicatedTuple)
+                        {
+                            out_queue.Add(tuplo);
+                            Console.WriteLine("Output from Operator:");
+                            Console.WriteLine(tuplo.id);
+                            Console.WriteLine(tuplo.user);
+                            Console.WriteLine(tuplo.URL);
+                        }
+                        duplicatedTuple.Remove(in_queue[0]);
+                        duplicatedTuple.Remove(in_queue[0]);
+
+                        in_queue.Remove(in_queue[0]);
+                    }
+                    if(words[0] == "COUNT")
+                    {
+                        outTuple = count.countMethod(in_queue[0]);
+                        out_queue.Add(outTuple);
+                        Console.WriteLine("Output from Operator:");
+                        Console.WriteLine(outTuple.id);
+                        Console.WriteLine(outTuple.user);
+                        Console.WriteLine(outTuple.URL);
+                        Console.WriteLine("tuples count until now: " + count.getCount());
+                        in_queue.Remove(in_queue[0]);
+                    }
                 }
             }
         }
@@ -450,9 +481,30 @@ namespace @operator
 
         class DUP : operators
         {
-            List<String> returnInput(List<String> tuple)
+            List<Tuple> listToDup = new List<Tuple>();
+
+            public List<Tuple> duplicate(Tuple tuple)
             {
+                listToDup.Add(tuple);
+                listToDup.Add(tuple);
+
+                return listToDup;
+            }
+        }
+
+        class COUNT : operators
+        {
+            int count = 0;
+
+            public Tuple countMethod(Tuple tuple)
+            {
+                count++;
                 return tuple;
+            }
+
+            public int getCount()
+            {
+                return count;
             }
         }
 
@@ -461,6 +513,5 @@ namespace @operator
 
         }
     }
-
 }
 
