@@ -39,7 +39,6 @@ namespace puppet_master
 
         static void Main(string[] args)
         {
-           
             read_conf_file();
             create_replicas();
             next_Operator();
@@ -52,7 +51,6 @@ namespace puppet_master
             }       
         }
       
-
         static void read_conf_file()
         {
             op1 = new Operator();
@@ -160,7 +158,7 @@ namespace puppet_master
         static public void create_replicas()
         {
              pcs_obj = (Ipcs)Activator.GetObject(typeof(Ipcs), "tcp://localhost:10000/pcs");
-            //(int rep_factor, string replica_URL, string whatoperator, string op_id)
+            
              funcaoCallBack = new AsyncCallback(OnExit);//aponta para a função de retorno da função assincrona
              RemoteAsyncDelegate dele = new RemoteAsyncDelegate(pcs_obj.create_replica);//aponta para a função a ser chamada assincronamente
 
@@ -219,35 +217,10 @@ namespace puppet_master
             
             if (command.Equals("start OP1"))
             {
-                if (op1.operator_spec.Contains("FILTER"))
-                {
-                    //List<string> lista = op_obj1.read_repository(op1.input_ops, op1.operator_spec);
-                    //output = lista;
-                }
-                else
-                {
-                    //List<string> lista = op_obj1.read_listOfStrings(output, op1.operator_spec);
-                    //output = lista;
-                }
                 op_obj1.set_start(op1.operator_spec);             
             }
             else if (command.Equals("start OP2"))
             {
-                if (op2.operator_spec.Contains("FILTER"))
-                {
-                    //List<string> lista = op_obj2.read_repository(op2.input_ops, op2.operator_spec);
-                    //output = lista;
-                }
-                else
-                {
-                    //List<string> teste = new List<string>();
-                    //teste.Add("user3");
-                    //teste.Add("user4");
-                    //teste.Add("user6");
-                    //teste.Add("user3");
-                    //List<string> lista = op_obj2.read_listOfStrings(teste, op2.operator_spec);
-                    //output = lista;
-                }
                 op_obj2.set_start(op2.operator_spec);
             }
             else if (command.Equals("start OP3"))

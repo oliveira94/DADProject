@@ -21,7 +21,6 @@ namespace @operator
         //Maybe will be need a struct with 2 parameters, one is the URL, and another is the position but position can be ambiguous
         List<String> tuplos = new List<String>();
         static opObject operatorObject;
-        string arg = "";
 
         public string pathDir = "";
 
@@ -40,14 +39,6 @@ namespace @operator
             Console.ReadLine();
         }
     }
-
-    //Receive tweeters.dat
-    //This file contains the URLs sent by tweeters. 
-    //The format of each line is: id, tweeter id, url
-
-    //Get the people who tweeted about some URL. This is done by reading the ﬁle tweeters.dat containing 
-    //tuples [id, tweeter, url] and by emitting, for each tuple in input, tuples of the format [tweeter] if url 
-    //is equal to “www.tecnico.ulisboa.pt” 
 
     public class opObject : MarshalByRefObject, IOperator
     {
@@ -88,9 +79,7 @@ namespace @operator
         public void set_start(string op_spec_in)
         {
             start = true;
-
             op_spec = op_spec_in;
-            //readFile();
 
             Thread readData = new Thread(readFile);
             readData.Start();
@@ -225,99 +214,6 @@ namespace @operator
                     //obj.input_queue(out_queue[0]);                          
                 }
             }
-        }
-
-        //public void input_queue(Tuple tuple)
-        //{
-        //    if (!start || queue.Count > 0)                 // se existir uma fila de espera ou o estado do operador for inativo
-        //    {
-        //        queue.Add(tuple);                          //coloca o tuplo na ultima posição da fila de espera
-        //    }
-        //    else
-        //    {
-        //        teste_processa(tuple);                     //caso não exista uma fila e o estado for ativo o tuplo é processado; O processamento real seria buscar o valor de args[1] para ver qual é este operador, e enviar para a função de processamento correspondente (DUP, FILTER...) 
-        //    }
-        //}
-
-        public void teste_processa(List<string> tp) // imprime o tuplo e envia para a queue do proximo operador(caso exista)
-        {
-            Console.Write("Input Tuplo: ");
-            foreach (string s in tp)
-            {
-                Console.Write(s + " ");
-            }
-
-            Console.WriteLine("\r\n");
-
-            if (!next_url.Equals("nulo"))  //se houver proximo operador
-            {
-                //obj.input_queue(tp);   // tem que ser assincrono para não ficar à espera do op2                             
-            }
-        }
-
-        //when the input of a operator is a directory/file
-        public List<String> read_repository(string path, string op_spec)
-        {
-
-            string[] words = op_spec.Split(',');
-
-            string final_path = Directory.GetCurrentDirectory();
-            final_path.Remove(final_path.Length - 40);
-            final_path = final_path + path;
-            Console.WriteLine("Repository at: " + path);
-
-            Tuple tuple = new Tuple();
-
-            List<string> tup_test = new List<string>(); // vai criar um tuplo de teste e colocar na sua queue (esta é uma função do OP1)
-
-            if (words[0] == "FILTER")
-            {
-                FILTER filter = new FILTER();
-                //tuple = filter.doTweeters( path, Int32.Parse(words[1]), words[2], words[3]);
-                //List<List<String>> teste = filter.getTweeters(words[3], path, words[2], Int32.Parse(words[1]));
-
-                //foreach (List<string> subList in teste)
-                //{
-                //    foreach (string item in subList)
-                //    {
-                //        tup_test.Add(item);
-                //    }
-                //}
-            }
-            //input_queue(tup_test);
-            return tup_test;
-        }
-
-        //when the input of a operator is a list of strings
-        public List<string> read_listOfStrings(List<string> input, string op_spec)
-        {
-            string[] words = op_spec.Split(',');
-            List<string> receiveoutput = new List<string>();
-
-            if (words[0] == "CUSTOM")
-            {
-                CUSTOM custom = new CUSTOM();
-                foreach (string user in input)
-                {
-                    //receiveoutput = custom.getoutput(words[1], words[3], user);
-                }
-            }
-            if (words[0] == "UNIQ")
-            {
-
-            }
-            if (words[0] == "DUP")
-            {
-
-            }
-
-            //foreach (string list in input)
-            //{
-            //    Console.WriteLine(list);
-            //}
-
-            //input_queue(input);
-            return receiveoutput;
         }
 
         class FILTER : operators
