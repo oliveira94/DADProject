@@ -220,42 +220,42 @@ namespace puppet_master
             {
                 if (op1.operator_spec.Contains("FILTER"))
                 {
-                    List<string> lista = op_obj1.read_repository(op1.input_ops, op1.operator_spec);
-                    output = lista;
+                    //List<string> lista = op_obj1.read_repository(op1.input_ops, op1.operator_spec);
+                    //output = lista;
                 }
                 else
                 {
-                    List<string> lista = op_obj1.read_listOfStrings(output, op1.operator_spec);
-                    output = lista;
+                    //List<string> lista = op_obj1.read_listOfStrings(output, op1.operator_spec);
+                    //output = lista;
                 }
-                op_obj1.set_start();             
+                op_obj1.set_start(op1.operator_spec);             
             }
             else if (command.Equals("start OP2"))
             {
                 if (op2.operator_spec.Contains("FILTER"))
                 {
-                    List<string> lista = op_obj2.read_repository(op2.input_ops, op2.operator_spec);
-                    output = lista;
+                    //List<string> lista = op_obj2.read_repository(op2.input_ops, op2.operator_spec);
+                    //output = lista;
                 }
                 else
                 {
-                    List<string> teste = new List<string>();
-                    teste.Add("user3");
-                    teste.Add("user4");
-                    teste.Add("user6");
-                    teste.Add("user3");
-                    List<string> lista = op_obj2.read_listOfStrings(teste, op2.operator_spec);
-                    output = lista;
+                    //List<string> teste = new List<string>();
+                    //teste.Add("user3");
+                    //teste.Add("user4");
+                    //teste.Add("user6");
+                    //teste.Add("user3");
+                    //List<string> lista = op_obj2.read_listOfStrings(teste, op2.operator_spec);
+                    //output = lista;
                 }
-                op_obj2.set_start();
+                op_obj2.set_start(op2.operator_spec);
             }
             else if (command.Equals("start OP3"))
             {
-                op_obj3.set_start();
+                op_obj3.set_start(op3.operator_spec);
             }
             else if (command.Equals("start OP4"))
             {
-                op_obj4.set_start();
+                //op_obj4.set_start();
             }
         }
 

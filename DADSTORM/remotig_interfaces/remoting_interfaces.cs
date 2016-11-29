@@ -18,8 +18,8 @@ namespace remoting_interfaces
     public interface IOperator
     {
         void next_op(string url, string op_spec);
-        void input_queue(List<string> tuple);
-        void set_start();
+        //void input_queue(Tuple tuple);
+        void set_start(string op_spec);
         List<string> read_repository(string input_ops, string operator_spec);
         List<string> read_listOfStrings(List<string> input, string op_spec);
     }

@@ -21,6 +21,7 @@ namespace @operator
         //Maybe will be need a struct with 2 parameters, one is the URL, and another is the position but position can be ambiguous
         List<String> tuplos = new List<String>();
         static opObject operatorObject;
+        string arg = "";
 
         public string pathDir = "";
 
@@ -54,12 +55,21 @@ namespace @operator
         static string next_url; //url do proximo operador
         static string next_op_spec; //tipo do proximo operador
         static public bool start = false;
-        List<List<string>> queue = new List<List<string>>();
+        List<Tuple> queue = new List<Tuple>();
 
-        List<List<string>> in_queue = new List<List<string>>();
-        List<List<string>> out_queue = new List<List<string>>();
+        List<Tuple> in_queue = new List<Tuple>();
+        List<Tuple> out_queue = new List<Tuple>();
+
+        static string op_spec;
 
         IOperator obj; //objecto remoto no proximo operador
+
+        struct Tuple
+        {
+            public int id;
+            public string user;
+            public string URL;
+        }
 
         public void next_op(string url, string op_spec)
         {
@@ -75,10 +85,11 @@ namespace @operator
 
         }
 
-
-        public void set_start()
+        public void set_start(string op_spec_in)
         {
             start = true;
+
+            op_spec = op_spec_in;
 
             Thread inThread = new Thread(process_inQueue);
             inThread.Start();
@@ -89,11 +100,66 @@ namespace @operator
 
         public void process_inQueue()
         {
+            Tuple tuple1 = new Tuple();
+            tuple1.id = 1;
+            tuple1.user = "user2";
+            tuple1.URL = "www.ulisboa.pt";
+
+            Tuple tuple2 = new Tuple();
+            tuple2.id = 1;
+            tuple2.user = "user3";
+            tuple2.URL = "www.tecnico.ulisboa.pt";
+
+            Tuple tuple3 = new Tuple();
+            tuple3.id = 3;
+            tuple3.user = "user3";
+            tuple3.URL = "www.tecnico.ulisboa.pt";
+
+            in_queue.Add(tuple1);
+            in_queue.Add(tuple2);
+            in_queue.Add(tuple3);
+
+            UNIQ uniq = new UNIQ();
+
             while (true)
             {
-                if (in_queue[0] != null)
+                if (in_queue.Count > 0)
                 {
-                    teste_processa(in_queue[0]);
+                    string[] words = op_spec.Split(',');
+
+                    Tuple outTuple = new Tuple();
+
+                    Console.WriteLine("ID: " + in_queue[0].id);
+                    Console.WriteLine("User: " + in_queue[0].user);
+                    Console.WriteLine("URL: " + in_queue[0].URL);
+
+                    if(words[0] == "FILTER")
+                    {
+                        FILTER filter = new FILTER();
+                        outTuple = filter.doTweeters(in_queue[0], Int32.Parse(words[1]), words[2], words[3]);
+                        in_queue.Remove(in_queue[0]);
+                        Console.WriteLine("Output from Operator:");
+                        Console.WriteLine(outTuple.id);
+                        Console.WriteLine(outTuple.user);
+                        Console.WriteLine(outTuple.URL);
+                    }
+                    if(words[0] == "CUSTOM")
+                    {
+                        CUSTOM custom = new CUSTOM();
+                        custom.getoutput(words[1], words[3], in_queue[0]);
+                        in_queue.Remove(in_queue[0]);
+                    }
+                
+                    if(words[0] == "UNIQ")
+                    {
+                        
+                        outTuple = uniq.uniqTuple(in_queue[0], Int32.Parse(words[1]));
+                        Console.WriteLine("Output from Operator:");
+                        Console.WriteLine(outTuple.id);
+                        Console.WriteLine(outTuple.user);
+                        Console.WriteLine(outTuple.URL);
+                        in_queue.Remove(in_queue[0]);
+                    }   
                 }
             }
         }
@@ -104,22 +170,22 @@ namespace @operator
             {
                 if (!next_url.Equals("nulo"))
                 {
-                    obj.input_queue(out_queue[0]);                          
+                    //obj.input_queue(out_queue[0]);                          
                 }
             }
         }
 
-        public void input_queue(List<string> tuple)
-        {
-            if (!start || queue.Count > 0)                 // se existir uma fila de espera ou o estado do operador for inativo
-            {
-                queue.Add(tuple);                          //coloca o tuplo na ultima posição da fila de espera
-            }
-            else
-            {
-                teste_processa(tuple);                     //caso não exista uma fila e o estado for ativo o tuplo é processado; O processamento real seria buscar o valor de args[1] para ver qual é este operador, e enviar para a função de processamento correspondente (DUP, FILTER...) 
-            }
-        }
+        //public void input_queue(Tuple tuple)
+        //{
+        //    if (!start || queue.Count > 0)                 // se existir uma fila de espera ou o estado do operador for inativo
+        //    {
+        //        queue.Add(tuple);                          //coloca o tuplo na ultima posição da fila de espera
+        //    }
+        //    else
+        //    {
+        //        teste_processa(tuple);                     //caso não exista uma fila e o estado for ativo o tuplo é processado; O processamento real seria buscar o valor de args[1] para ver qual é este operador, e enviar para a função de processamento correspondente (DUP, FILTER...) 
+        //    }
+        //}
 
         public void teste_processa(List<string> tp) // imprime o tuplo e envia para a queue do proximo operador(caso exista)
         {
@@ -133,7 +199,7 @@ namespace @operator
 
             if (!next_url.Equals("nulo"))  //se houver proximo operador
             {
-                obj.input_queue(tp);   // tem que ser assincrono para não ficar à espera do op2                             
+                //obj.input_queue(tp);   // tem que ser assincrono para não ficar à espera do op2                             
             }
         }
 
@@ -148,23 +214,25 @@ namespace @operator
             final_path = final_path + path;
             Console.WriteLine("Repository at: " + path);
 
+            Tuple tuple = new Tuple();
+
             List<string> tup_test = new List<string>(); // vai criar um tuplo de teste e colocar na sua queue (esta é uma função do OP1)
 
             if (words[0] == "FILTER")
             {
                 FILTER filter = new FILTER();
-                filter.doTweeters(words[3], path, words[2], Int32.Parse(words[1]));
-                List<List<String>> teste = filter.getTweeters(words[3], path, words[2], Int32.Parse(words[1]));
+                //tuple = filter.doTweeters( path, Int32.Parse(words[1]), words[2], words[3]);
+                //List<List<String>> teste = filter.getTweeters(words[3], path, words[2], Int32.Parse(words[1]));
 
-                foreach (List<string> subList in teste)
-                {
-                    foreach (string item in subList)
-                    {
-                        tup_test.Add(item);
-                    }
-                }
+                //foreach (List<string> subList in teste)
+                //{
+                //    foreach (string item in subList)
+                //    {
+                //        tup_test.Add(item);
+                //    }
+                //}
             }
-            input_queue(tup_test);
+            //input_queue(tup_test);
             return tup_test;
         }
 
@@ -179,7 +247,7 @@ namespace @operator
                 CUSTOM custom = new CUSTOM();
                 foreach (string user in input)
                 {
-                    receiveoutput = custom.getoutput(words[1], words[3], user);
+                    //receiveoutput = custom.getoutput(words[1], words[3], user);
                 }
             }
             if (words[0] == "UNIQ")
@@ -200,86 +268,83 @@ namespace @operator
             return receiveoutput;
         }
 
-
         class FILTER : operators
         {
-            public static Dictionary<string, List<string>> dictForTweeters =
-                new Dictionary<string, List<string>>();
-            public static bool dictTweet = false;
-
-            public void doTweeters(string url, string path, string condition, int value)
+            public Tuple doTweeters(Tuple input_tuple, int field_number, string condition, string value)
             {
-                string tweetersFilepath = @"C:\Users\diogo\Documents\GitHub\FindSomethingElse\DADSTORM\" + path;
-
-                System.IO.StreamReader tweetersFile =
-                new System.IO.StreamReader(tweetersFilepath, true);
-
-                string line = tweetersFile.ReadLine();
                 List<string> tweeters = new List<string>();
-                while (line != null)
-                {
 
-                    if (line[0] != '%')
-                    {
-                        string[] tokens = line.Split(',');
+                Tuple tuple = new Tuple();
 
-                        if (condition == "<")
+                string[] tokens = { input_tuple.id.ToString(), input_tuple.user, input_tuple.URL };
+
+                        //know what field_number(one, two or three)
+                        //field_number is ID
+                        if(field_number == 1)
                         {
-                            if (tokens[2].Contains(url) && Int32.Parse(tokens[0]) < value)
+                            switch (condition)
                             {
-                                tweeters.Add(tokens[1]);
+                                case "<":
+                                    if(Int32.Parse(tokens[0]) < Int32.Parse(value))
+                                    {
+                                        tuple.id = Int32.Parse(tokens[0]);
+                                        tuple.user = tokens[1];
+                                        tuple.URL = tokens[2];
+                                    }
+                                    break;
+                                case ">":
+                                    if (Int32.Parse(tokens[0]) > Int32.Parse(value))
+                                    {
+                                        tuple.id = Int32.Parse(tokens[0]);
+                                        tuple.user = tokens[1];
+                                        tuple.URL = tokens[2];
+                                    }
+                                    break;
+                                case "=":
+                                    if (Int32.Parse(tokens[0]) == Int32.Parse(value))
+                                    {
+                                
+                                        tuple.id = Int32.Parse(tokens[0]);
+                                        tuple.user = tokens[1];
+                                        tuple.URL = tokens[2];
+                                    }
+                                    break;
+                                default:
+                                    Console.WriteLine("default");
+                                    break;
                             }
                         }
-                        if (condition == "=")
+                        //field_number is users
+                        else if(field_number == 2)
                         {
-                            if (tokens[2].Contains(url) && Int32.Parse(tokens[0]) == value)
+                           if(value.Contains(tokens[1]))
                             {
-                                tweeters.Add(tokens[1]);
+                                tuple.id = Int32.Parse(tokens[0]);
+                                tuple.user = tokens[1];
+                                tuple.URL = tokens[2];
                             }
                         }
-                        if (condition == ">")
+                        //field_nember is the URLs
+                        else if (field_number == 3)
                         {
-                            if (tokens[2].Contains(url) && Int32.Parse(tokens[0]) > value)
+                            if (value.Contains(tokens[2]))
                             {
-                                tweeters.Add(tokens[1]);
+                                tuple.id = Int32.Parse(tokens[0]);
+                                tuple.user = tokens[1];
+                                tuple.URL = tokens[2];
                             }
                         }
-                    }
-
-                    line = tweetersFile.ReadLine();
-                }
-                dictForTweeters.Add(url, tweeters);
-                dictTweet = true;
+                return tuple;
             }
-
-            public List<List<string>> getTweeters(string url, string path, string condition, int value)
-            {
-                List<List<string>> outputTuples = new List<List<string>>();
-                List<string> tuple;
-
-                if (!dictTweet) doTweeters(url, path, condition, value);
-                if (dictForTweeters.ContainsKey(url))
-                {
-                    foreach (string tweeter in dictForTweeters[url])
-                    {
-                        tuple = new List<string>();
-                        tuple.Add(tweeter);
-                        outputTuples.Add(tuple);
-                    }
-                }
-                return outputTuples;
-            }
-
-
         }
 
         // where enter the followers.dat and the mylib.dll wheer
         class CUSTOM : operators
         {
-            public List<String> getoutput(string dll, string method, string user)
+            public List<String> getoutput(string dll, string method, Tuple tuple)
             {
                 List<string> outputUsers = new List<string>();
-                Assembly testDLL = Assembly.LoadFile(@"C:\Users\diogo\Documents\GitHub\FindSomethingElse\DADSTORM\" + dll);
+                Assembly testDLL = Assembly.LoadFile(@"\\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\" + dll);
 
                 foreach (var type in testDLL.GetExportedTypes())
                 {
@@ -287,8 +352,6 @@ namespace @operator
 
                     foreach (MemberInfo member in members)
                     {
-                        //Console.WriteLine(type.Name + "." + member.Name);
-
                         if (member.Name.Equals(method))
                         {
                             MethodInfo methodInfo = type.GetMethod(member.Name);
@@ -297,6 +360,7 @@ namespace @operator
                             {
                                 IList<IList<string>> result;
                                 ParameterInfo[] parameters = methodInfo.GetParameters();
+                               
                                 object classInstance = Activator.CreateInstance(type, null);
 
                                 if (parameters.Length == 0)
@@ -308,13 +372,14 @@ namespace @operator
                                     object[] arr4 = new object[1];
 
                                     List<string> inputLista = new List<string>();
-                                    inputLista.Add("something");
-                                    inputLista.Add(user);
+                                    inputLista.Add(tuple.id.ToString());
+                                    inputLista.Add(tuple.user);
+                                    
 
                                     arr4[0] = inputLista;
 
                                     result = (IList<IList<string>>)methodInfo.Invoke(classInstance, arr4);
-                                    Console.WriteLine(user);
+                                    Console.WriteLine(tuple.user);
                                     foreach (List<string> outputlist in result)
                                     {
                                         foreach (string output in outputlist)
@@ -337,27 +402,50 @@ namespace @operator
 
         class UNIQ : operators
         {
-            int field_number;
+            List<string> tuplos = new List<string>();
+            Tuple output = new Tuple();
 
-            public UNIQ(int field_number)
+            public Tuple uniqTuple(Tuple tuple, int field_nember)
             {
-                this.field_number = field_number;
-            }
+                if(field_nember == 1)
+                {
+                    if (!tuplos.Contains(tuple.id.ToString()))
+                    {
+                        tuplos.Add(tuple.id.ToString());
+                        output = tuple;
+                    }
+                    else
+                    {
+                        output = new Tuple();
+                    }
+                }
+                else if(field_nember == 2)
+                {
+                    if (!tuplos.Contains(tuple.user))
+                    {
+                        tuplos.Add(tuple.user);
+                        output = tuple;
+                    }
+                    else
+                    {
+                        output = new Tuple();
+                    }
+                }
+                else if (field_nember == 3)
+                {
+                    if (!tuplos.Contains(tuple.URL))
+                    {
+                        tuplos.Add(tuple.URL);
+                        output = tuple;
+                    }
+                    else
+                    {
+                        output = new Tuple();
+                    }
+                }
 
-            // i'm assuming that the tuples are ints just to simplify a possible implementation
-            /*  int processTuple(List<int> tuple)
-              {
-                  int returnValue = -1;
-                  for(int i = 0; i < tuple.Count; i++)
-                  {
-                      if (tuple[i] == field_number)
-                      {
-                          returnValue = tuple[i];
-                          return returnValue;
-                      }    
-                  }
-              }
-             */
+                return output;
+            }
         }
 
         class DUP : operators
