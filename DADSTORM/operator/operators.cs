@@ -90,12 +90,33 @@ namespace @operator
             start = true;
 
             op_spec = op_spec_in;
+            //readFile();
+
+            Thread readData = new Thread(readFile);
+            readData.Start();
 
             Thread inThread = new Thread(process_inQueue);
             inThread.Start();
 
             Thread outThread = new Thread(process_outQueue);
             outThread.Start();
+        }
+
+        public void readFile()
+        {
+            string line;
+            System.IO.StreamReader file = new System.IO.StreamReader(@"..\..\..\tweeters.data");
+            Tuple tuple = new Tuple();
+
+            while ((line = file.ReadLine()) != null)
+            {
+                string[] words = line.Split(',');
+
+                tuple.id = Int32.Parse(words[0]);
+                tuple.user = words[1];
+                tuple.URL = words[2];
+                in_queue.Add(tuple);
+            }
         }
 
         public void process_inQueue()
@@ -115,9 +136,9 @@ namespace @operator
             tuple3.user = "user3";
             tuple3.URL = "www.tecnico.ulisboa.pt";
 
-            in_queue.Add(tuple1);
-            in_queue.Add(tuple2);
-            in_queue.Add(tuple3);
+            //in_queue.Add(tuple1);
+            //in_queue.Add(tuple2);
+            //in_queue.Add(tuple3);
 
             FILTER filter = new FILTER();
             CUSTOM custom = new CUSTOM();
@@ -348,7 +369,7 @@ namespace @operator
                         //field_number is users
                         else if(field_number == 2)
                         {
-                           if(value.Contains(tokens[1]))
+                           if(tokens[1].Contains(value))
                             {
                                 tuple.id = Int32.Parse(tokens[0]);
                                 tuple.user = tokens[1];
@@ -358,8 +379,10 @@ namespace @operator
                         //field_nember is the URLs
                         else if (field_number == 3)
                         {
-                            if (value.Contains(tokens[2]))
+                 
+                            if (tokens[2].Contains(value))
                             {
+                        
                                 tuple.id = Int32.Parse(tokens[0]);
                                 tuple.user = tokens[1];
                                 tuple.URL = tokens[2];

@@ -43,6 +43,7 @@ namespace puppet_master
             read_conf_file();
             create_replicas();
             next_Operator();
+     
             Console.WriteLine("Input (start OP{1-4}) command");
             while(true)
             {
