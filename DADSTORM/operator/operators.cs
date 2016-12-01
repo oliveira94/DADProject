@@ -62,11 +62,11 @@ namespace @operator
             public string URL;
         }
 
-        public void next_op(string url, string op_spec)
+        public void next_op(string url) 
         {
             next_url = url;
             next_op_spec = op_spec;
-            Console.WriteLine("Next URL->" + next_url + "   Next op_spec->" + next_op_spec);
+            Console.WriteLine("Next URL->" + next_url);
 
             if (!next_url.Equals("nulo"))
             {

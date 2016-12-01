@@ -17,7 +17,7 @@ namespace remoting_interfaces
     }
     public interface IOperator
     {
-        void next_op(string url, string op_spec);
+        void next_op(string url);
         void readFile();
         void set_start(string op_spec);
     }
