@@ -2,5 +2,5 @@ Semantics at-most-once
 LoggingLevel light
 OP1 input_ops tweeters.data rep_fact 1 routing hashing(1) address tcp://localhost:11100/op operator_spec FILTER 1,<,5
 OP2 input_ops OP1 rep_fact 1 routing random address tcp://localhost:11110/op operator_spec CUSTOM mylib.dll,QueryFollowersFile,getFollowers 
-OP3 input_ops OP2 rep_fact 1 routing hashing(1) address tcp://localhost:11111/op operator_spec UNIQ 3
+OP3 input_ops OP2 rep_fact 1 routing hashing(1) address tcp://localhost:11111/op operator_spec UNIQ 2
 OP4 input_ops OP3 rep_fact 1 routing primary address tcp://localhost:11000/op operator_spec COUNT

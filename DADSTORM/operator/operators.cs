@@ -81,6 +81,7 @@ namespace @operator
             start = true;
             op_spec = op_spec_in;
 
+            //thread to convert each line of tweeters.dat in a tuple
             Thread readData = new Thread(readFile);
             readData.Start();
 
@@ -91,6 +92,7 @@ namespace @operator
             outThread.Start();
         }
 
+        //Converto each userInfo in a tuple
         public void readFile()
         {
             string line;
@@ -125,9 +127,9 @@ namespace @operator
             tuple3.user = "user3";
             tuple3.URL = "www.tecnico.ulisboa.pt";
 
-            //in_queue.Add(tuple1);
-            //in_queue.Add(tuple2);
-            //in_queue.Add(tuple3);
+            in_queue.Add(tuple1);
+            in_queue.Add(tuple2);
+            in_queue.Add(tuple3);
 
             FILTER filter = new FILTER();
             CUSTOM custom = new CUSTOM();
@@ -142,7 +144,7 @@ namespace @operator
                     string[] words = op_spec.Split(',');
 
                     Tuple outTuple = new Tuple();
-
+                    Console.WriteLine("   ");
                     Console.WriteLine("ID: " + in_queue[0].id);
                     Console.WriteLine("User: " + in_queue[0].user);
                     Console.WriteLine("URL: " + in_queue[0].URL);
@@ -159,10 +161,21 @@ namespace @operator
                     }
                     if(words[0] == "CUSTOM")
                     {
-                        custom.getoutput(words[1], words[3], in_queue[0]);
+                        List<string> Followers = new List<string>();
+
+                        Console.WriteLine(in_queue[0]);
+
+                        Followers = custom.getoutput(words[1], words[3], in_queue[0]);
+                        foreach(string follower in Followers)
+                        {
+                            Console.WriteLine("follower: " + follower);
+                            Tuple tuple = new Tuple();
+                            tuple.user = follower;
+                            out_queue.Add(tuple);
+                        }
+                        
                         in_queue.Remove(in_queue[0]);
                     }
-                
                     if(words[0] == "UNIQ")
                     {
                         outTuple = uniq.uniqTuple(in_queue[0], Int32.Parse(words[1]));
@@ -323,20 +336,18 @@ namespace @operator
 
                                     List<string> inputLista = new List<string>();
                                     inputLista.Add(tuple.id.ToString());
-                                    inputLista.Add(tuple.user);
-                                    
-
+                                    string str = tuple.user;
+                                    str = str.Replace(" ", String.Empty);
+                                    inputLista.Add(str);
                                     arr4[0] = inputLista;
 
                                     result = (IList<IList<string>>)methodInfo.Invoke(classInstance, arr4);
-                                    Console.WriteLine(tuple.user);
+                                    
                                     foreach (List<string> outputlist in result)
                                     {
                                         foreach (string output in outputlist)
                                         {
                                             outputUsers.Add(output);
-                                            Console.WriteLine(output);
-
                                         }
 
                                     }
