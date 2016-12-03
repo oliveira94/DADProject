@@ -172,16 +172,16 @@ namespace puppet_master
         static public void next_Operator() //envia informação a cada operador sobre o operador seguinte
         {
           op_obj1 = (IOperator)Activator.GetObject(typeof(IOperator), routing(op1.operator_id));//cria um objeto remoto em OP1
-          op_obj1.next_op(routing(op2.operator_id));                         //envia o URL e o tipo de operador do OP2 para OP1 
+          op_obj1.next_op(routing(op2.operator_id), op2.operator_spec);                         //envia o URL e o tipo de operador do OP2 para OP1 
 
           op_obj2 = (IOperator)Activator.GetObject(typeof(IOperator), routing(op2.operator_id));
-          op_obj2.next_op(routing(op3.operator_id));
+          op_obj2.next_op(routing(op3.operator_id), op3.operator_spec);
 
           op_obj3 = (IOperator)Activator.GetObject(typeof(IOperator), routing(op3.operator_id));
-          op_obj3.next_op(routing(op4.operator_id));
+          op_obj3.next_op(routing(op4.operator_id), op4.operator_spec);
 
           op_obj4 = (IOperator)Activator.GetObject(typeof(IOperator), routing(op4.operator_id));
-          op_obj4.next_op("nulo");                       
+          op_obj4.next_op("nulo", "nulo");                       
          }
   
 
@@ -217,19 +217,19 @@ namespace puppet_master
             
             if (command.Equals("start OP1"))
             {
-                op_obj1.set_start(op1.operator_spec);             
+                op_obj1.set_start(op1.operator_spec, 0);             
             }
             else if (command.Equals("start OP2"))
             {
-                op_obj2.set_start(op2.operator_spec);
+                op_obj2.set_start(op2.operator_spec,1);
             }
             else if (command.Equals("start OP3"))
             {
-                op_obj3.set_start(op3.operator_spec);
+                op_obj3.set_start(op3.operator_spec,1);
             }
             else if (command.Equals("start OP4"))
             {
-                op_obj4.set_start(op4.operator_spec);
+                op_obj4.set_start(op4.operator_spec,1);
             }
         }
 
@@ -244,7 +244,7 @@ namespace puppet_master
 
         public static void OnExit(IAsyncResult ar)
         {
-          
+            Console.WriteLine("Functiodfdfdn has returned");    
         }
     }
 

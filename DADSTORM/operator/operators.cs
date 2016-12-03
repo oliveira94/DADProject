@@ -40,33 +40,36 @@ namespace @operator
         }
     }
 
-    public class opObject : MarshalByRefObject, IOperator
+   
+    
+
+public class opObject : MarshalByRefObject, IOperator
     {
         IOperator op_obj;
         static string next_url; //url do proximo operador
         static string next_op_spec; //tipo do proximo operador
         static public bool start = false;
-        List<Tuple> queue = new List<Tuple>();
+        List<remoting_interfaces.Tuple> queue = new List<remoting_interfaces.Tuple>();
 
-        List<Tuple> in_queue = new List<Tuple>();
-        List<Tuple> out_queue = new List<Tuple>();
+        List<remoting_interfaces.Tuple> in_queue = new List<remoting_interfaces.Tuple>();
+        List<remoting_interfaces.Tuple> out_queue = new List<remoting_interfaces.Tuple>();
 
         static string op_spec;
 
         IOperator obj; //objecto remoto no proximo operador
 
-        struct Tuple
-        {
-            public int id;
-            public string user;
-            public string URL;
-        }
+        //struct remoting_interfaces.Tuple
+        //{
+        //    public int id;
+        //    public string user;
+        //    public string URL;
+        //}
 
-        public void next_op(string url) 
+        public void next_op(string url, string op_spec)
         {
             next_url = url;
             next_op_spec = op_spec;
-            Console.WriteLine("Next URL->" + next_url);
+            Console.WriteLine("Next URL->" + next_url + "   Next op_spec->" + next_op_spec);
 
             if (!next_url.Equals("nulo"))
             {
@@ -76,15 +79,18 @@ namespace @operator
 
         }
 
-        public void set_start(string op_spec_in)
+        public void set_start(string op_spec_in, int firstTime)
         {
             start = true;
             op_spec = op_spec_in;
 
-            //thread to convert each line of tweeters.dat in a tuple
-            Thread readData = new Thread(readFile);
-            readData.Start();
-
+            if(firstTime == 0)
+            {
+                //thread to convert each line of tweeters.dat in a remoting_interfaces.Tuple
+                Thread readData = new Thread(readFile);
+                readData.Start();
+            }
+            
             Thread inThread = new Thread(process_inQueue);
             inThread.Start();
 
@@ -92,44 +98,29 @@ namespace @operator
             outThread.Start();
         }
 
-        //Converto each userInfo in a tuple
+        //Converto each userInfo in a remoting_interfaces.Tuple
         public void readFile()
         {
             string line;
             System.IO.StreamReader file = new System.IO.StreamReader(@"..\..\..\tweeters.data");
-            Tuple tuple = new Tuple();
-
+            
             while ((line = file.ReadLine()) != null)
             {
                 string[] words = line.Split(',');
-
-                tuple.id = Int32.Parse(words[0]);
-                tuple.user = words[1];
-                tuple.URL = words[2];
-                in_queue.Add(tuple);
+                remoting_interfaces.Tuple Tuple = new remoting_interfaces.Tuple(Int32.Parse(words[0]), words[1], words[2]);
+                in_queue.Add(Tuple);
             }
         }
 
         public void process_inQueue()
         {
-            Tuple tuple1 = new Tuple();
-            tuple1.id = 1;
-            tuple1.user = "user2";
-            tuple1.URL = "www.ulisboa.pt";
+            remoting_interfaces.Tuple Tuple1 = new remoting_interfaces.Tuple(1, "user2", "www.ulisboa.pt");
+            remoting_interfaces.Tuple Tuple2 = new remoting_interfaces.Tuple(1, "user3", "www.tecnico.ulisboa.pt");
+            remoting_interfaces.Tuple Tuple3 = new remoting_interfaces.Tuple(3, "user3", "www.tecnico.ulisboa.pt");
 
-            Tuple tuple2 = new Tuple();
-            tuple2.id = 1;
-            tuple2.user = "user3";
-            tuple2.URL = "www.tecnico.ulisboa.pt";
-
-            Tuple tuple3 = new Tuple();
-            tuple3.id = 3;
-            tuple3.user = "user3";
-            tuple3.URL = "www.tecnico.ulisboa.pt";
-
-            in_queue.Add(tuple1);
-            in_queue.Add(tuple2);
-            in_queue.Add(tuple3);
+            in_queue.Add(Tuple1);
+            in_queue.Add(Tuple2);
+            in_queue.Add(Tuple3);
 
             FILTER filter = new FILTER();
             CUSTOM custom = new CUSTOM();
@@ -139,15 +130,20 @@ namespace @operator
 
             while (true)
             {
+                Thread.Sleep(2000);
+
                 if (in_queue.Count > 0)
                 {
                     string[] words = op_spec.Split(',');
 
-                    Tuple outTuple = new Tuple();
+
+
+                    remoting_interfaces.Tuple outTuple;
+                    
                     Console.WriteLine("   ");
-                    Console.WriteLine("ID: " + in_queue[0].id);
-                    Console.WriteLine("User: " + in_queue[0].user);
-                    Console.WriteLine("URL: " + in_queue[0].URL);
+                    Console.WriteLine("ID: " + in_queue[0].getID());
+                    Console.WriteLine("User: " + in_queue[0].getUser());
+                    Console.WriteLine("URL: " + in_queue[0].getURL());
 
                     if(words[0] == "FILTER")
                     {
@@ -155,9 +151,9 @@ namespace @operator
                         out_queue.Add(outTuple);
                         in_queue.Remove(in_queue[0]);
                         Console.WriteLine("Output from Operator:");
-                        Console.WriteLine(outTuple.id);
-                        Console.WriteLine(outTuple.user);
-                        Console.WriteLine(outTuple.URL);
+                        Console.WriteLine(outTuple.getID());
+                        Console.WriteLine(outTuple.getUser());
+                        Console.WriteLine(outTuple.getURL());
                     }
                     if(words[0] == "CUSTOM")
                     {
@@ -169,9 +165,8 @@ namespace @operator
                         foreach(string follower in Followers)
                         {
                             Console.WriteLine("follower: " + follower);
-                            Tuple tuple = new Tuple();
-                            tuple.user = follower;
-                            out_queue.Add(tuple);
+                            remoting_interfaces.Tuple Tuple = new remoting_interfaces.Tuple(0, follower,"");
+                            out_queue.Add(Tuple);
                         }
                         
                         in_queue.Remove(in_queue[0]);
@@ -181,22 +176,22 @@ namespace @operator
                         outTuple = uniq.uniqTuple(in_queue[0], Int32.Parse(words[1]));
                         out_queue.Add(outTuple);
                         Console.WriteLine("Output from Operator:");
-                        Console.WriteLine(outTuple.id);
-                        Console.WriteLine(outTuple.user);
-                        Console.WriteLine(outTuple.URL);
+                        Console.WriteLine(outTuple.getID());
+                        Console.WriteLine(outTuple.getUser());
+                        Console.WriteLine(outTuple.getURL());
                         in_queue.Remove(in_queue[0]);
                     }   
                     if(words[0] == "DUP")
                     {
-                        List<Tuple> duplicatedTuple = dup.duplicate(in_queue[0]);
+                        List<remoting_interfaces.Tuple> duplicatedTuple = dup.duplicate(in_queue[0]);
                         
-                        foreach (Tuple tuplo in duplicatedTuple)
+                        foreach (remoting_interfaces.Tuple tuplo in duplicatedTuple)
                         {
                             out_queue.Add(tuplo);
                             Console.WriteLine("Output from Operator:");
-                            Console.WriteLine(tuplo.id);
-                            Console.WriteLine(tuplo.user);
-                            Console.WriteLine(tuplo.URL);
+                            Console.WriteLine(tuplo.getID());
+                            Console.WriteLine(tuplo.getUser());
+                            Console.WriteLine(tuplo.getURL());
                         }
                         duplicatedTuple.Remove(in_queue[0]);
                         duplicatedTuple.Remove(in_queue[0]);
@@ -208,10 +203,10 @@ namespace @operator
                         outTuple = count.countMethod(in_queue[0]);
                         out_queue.Add(outTuple);
                         Console.WriteLine("Output from Operator:");
-                        Console.WriteLine(outTuple.id);
-                        Console.WriteLine(outTuple.user);
-                        Console.WriteLine(outTuple.URL);
-                        Console.WriteLine("tuples count until now: " + count.getCount());
+                        Console.WriteLine(outTuple.getID());
+                        Console.WriteLine(outTuple.getUser());
+                        Console.WriteLine(outTuple.getURL());
+                        Console.WriteLine("Tuples count until now: " + count.getCount());
                         in_queue.Remove(in_queue[0]);
                     }
                 }
@@ -222,22 +217,35 @@ namespace @operator
         {
             while (true)
             {
-                if (!next_url.Equals("nulo"))
+                if (!next_url.Equals("nulo") )
                 {
-                    //obj.input_queue(out_queue[0]);                          
+                    if(out_queue.Count > 0)
+                    {
+                        //obj.input_queue(out_queue[0]);
+                        //out_queue.Remove(out_queue[0]);
+                    }
+                                            
                 }
+            }
+        }
+
+        public void input_queue(remoting_interfaces.Tuple tuple)
+        {
+            if (!start || queue.Count > 0)                 //se existir uma fila de espera ou o estado do operador for inativo
+            {
+                queue.Add(tuple);                          //coloca o tuplo na ultima posição da fila de espera
             }
         }
 
         class FILTER : operators
         {
-            public Tuple doTweeters(Tuple input_tuple, int field_number, string condition, string value)
+            public remoting_interfaces.Tuple doTweeters(remoting_interfaces.Tuple input_Tuple, int field_number, string condition, string value)
             {
                 List<string> tweeters = new List<string>();
 
-                Tuple tuple = new Tuple();
+                remoting_interfaces.Tuple Tuple = new remoting_interfaces.Tuple(0, "", "");
 
-                string[] tokens = { input_tuple.id.ToString(), input_tuple.user, input_tuple.URL };
+                string[] tokens = { input_Tuple.getID().ToString(), input_Tuple.getUser(), input_Tuple.getURL() };
 
                         //know what field_number(one, two or three)
                         //field_number is ID
@@ -248,27 +256,26 @@ namespace @operator
                                 case "<":
                                     if(Int32.Parse(tokens[0]) < Int32.Parse(value))
                                     {
-                                        tuple.id = Int32.Parse(tokens[0]);
-                                        tuple.user = tokens[1];
-                                        tuple.URL = tokens[2];
+                                        Tuple.setID(Int32.Parse(tokens[0]));
+                                        Tuple.setUser(tokens[1]);
+                                        Tuple.setURL(tokens[2]);
                                     }
                                     break;
                                 case ">":
                                     if (Int32.Parse(tokens[0]) > Int32.Parse(value))
                                     {
-                                        tuple.id = Int32.Parse(tokens[0]);
-                                        tuple.user = tokens[1];
-                                        tuple.URL = tokens[2];
-                                    }
+                                        Tuple.setID(Int32.Parse(tokens[0]));
+                                        Tuple.setUser(tokens[1]);
+                                        Tuple.setURL(tokens[2]);
+                            }
                                     break;
                                 case "=":
                                     if (Int32.Parse(tokens[0]) == Int32.Parse(value))
                                     {
-                                
-                                        tuple.id = Int32.Parse(tokens[0]);
-                                        tuple.user = tokens[1];
-                                        tuple.URL = tokens[2];
-                                    }
+                                        Tuple.setID(Int32.Parse(tokens[0]));
+                                        Tuple.setUser(tokens[1]);
+                                        Tuple.setURL(tokens[2]);
+                            }
                                     break;
                                 default:
                                     Console.WriteLine("default");
@@ -280,10 +287,10 @@ namespace @operator
                         {
                            if(tokens[1].Contains(value))
                             {
-                                tuple.id = Int32.Parse(tokens[0]);
-                                tuple.user = tokens[1];
-                                tuple.URL = tokens[2];
-                            }
+                                Tuple.setID(Int32.Parse(tokens[0]));
+                                Tuple.setUser(tokens[1]);
+                                Tuple.setURL(tokens[2]);
+                    }
                         }
                         //field_nember is the URLs
                         else if (field_number == 3)
@@ -291,20 +298,19 @@ namespace @operator
                  
                             if (tokens[2].Contains(value))
                             {
-                        
-                                tuple.id = Int32.Parse(tokens[0]);
-                                tuple.user = tokens[1];
-                                tuple.URL = tokens[2];
-                            }
+                                Tuple.setID(Int32.Parse(tokens[0]));
+                                Tuple.setUser(tokens[1]);
+                                Tuple.setURL(tokens[2]);
+                    }
                         }
-                return tuple;
+                return Tuple;
             }
         }
 
         // where enter the followers.dat and the mylib.dll wheer
         class CUSTOM : operators
         {
-            public List<String> getoutput(string dll, string method, Tuple tuple)
+            public List<String> getoutput(string dll, string method, remoting_interfaces.Tuple Tuple)
             {
                 List<string> outputUsers = new List<string>();
                 Assembly testDLL = Assembly.LoadFile(@"\\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\" + dll);
@@ -335,8 +341,8 @@ namespace @operator
                                     object[] arr4 = new object[1];
 
                                     List<string> inputLista = new List<string>();
-                                    inputLista.Add(tuple.id.ToString());
-                                    string str = tuple.user;
+                                    inputLista.Add(Tuple.getID().ToString());
+                                    string str = Tuple.getUser();
                                     str = str.Replace(" ", String.Empty);
                                     inputLista.Add(str);
                                     arr4[0] = inputLista;
@@ -364,44 +370,44 @@ namespace @operator
         class UNIQ : operators
         {
             List<string> tuplos = new List<string>();
-            Tuple output = new Tuple();
+            remoting_interfaces.Tuple output = new remoting_interfaces.Tuple(0, "", "");
 
-            public Tuple uniqTuple(Tuple tuple, int field_nember)
+            public remoting_interfaces.Tuple uniqTuple(remoting_interfaces.Tuple Tuple, int field_nember)
             {
                 if(field_nember == 1)
                 {
-                    if (!tuplos.Contains(tuple.id.ToString()))
+                    if (!tuplos.Contains(Tuple.getID().ToString()))
                     {
-                        tuplos.Add(tuple.id.ToString());
-                        output = tuple;
+                        tuplos.Add(Tuple.getID().ToString());
+                        output = Tuple;
                     }
                     else
                     {
-                        output = new Tuple();
+                        output = new remoting_interfaces.Tuple(0, "", "");
                     }
                 }
                 else if(field_nember == 2)
                 {
-                    if (!tuplos.Contains(tuple.user))
+                    if (!tuplos.Contains(Tuple.getUser()))
                     {
-                        tuplos.Add(tuple.user);
-                        output = tuple;
+                        tuplos.Add(Tuple.getUser());
+                        output = Tuple;
                     }
                     else
                     {
-                        output = new Tuple();
+                        output = new remoting_interfaces.Tuple(0, "", "");
                     }
                 }
                 else if (field_nember == 3)
                 {
-                    if (!tuplos.Contains(tuple.URL))
+                    if (!tuplos.Contains(Tuple.getURL()))
                     {
-                        tuplos.Add(tuple.URL);
-                        output = tuple;
+                        tuplos.Add(Tuple.getURL());
+                        output = Tuple;
                     }
                     else
                     {
-                        output = new Tuple();
+                        output = new remoting_interfaces.Tuple(0, "", "");
                     }
                 }
 
@@ -411,12 +417,12 @@ namespace @operator
 
         class DUP : operators
         {
-            List<Tuple> listToDup = new List<Tuple>();
+            List<remoting_interfaces.Tuple> listToDup = new List<remoting_interfaces.Tuple>();
 
-            public List<Tuple> duplicate(Tuple tuple)
+            public List<remoting_interfaces.Tuple> duplicate(remoting_interfaces.Tuple Tuple)
             {
-                listToDup.Add(tuple);
-                listToDup.Add(tuple);
+                listToDup.Add(Tuple);
+                listToDup.Add(Tuple);
 
                 return listToDup;
             }
@@ -426,10 +432,10 @@ namespace @operator
         {
             int count = 0;
 
-            public Tuple countMethod(Tuple tuple)
+            public remoting_interfaces.Tuple countMethod(remoting_interfaces.Tuple Tuple)
             {
                 count++;
-                return tuple;
+                return Tuple;
             }
 
             public int getCount()
