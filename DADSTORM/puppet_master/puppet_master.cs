@@ -214,22 +214,77 @@ namespace puppet_master
         static void read_command(string command)
         {
             List<string> output = new List<string>();
-            
-            if (command.Equals("start OP1"))
+
+            try
             {
-                op_obj1.set_start(op1.operator_spec, 0);             
+                if (command.Equals("start OP1"))
+                {
+                    op_obj1.set_start(op1.operator_spec, 0);
+                }
+                else if (command.Equals("start OP2"))
+                {
+                    op_obj2.set_start(op2.operator_spec, 1);
+                }
+                else if (command.Equals("start OP3"))
+                {
+                    op_obj3.set_start(op3.operator_spec, 1);
+                }
+                else if (command.Equals("start OP4"))
+                {
+                    op_obj4.set_start(op4.operator_spec, 1);
+                }
+                else if (command.Equals("freeze OP1"))
+                {
+                    op_obj1.set_freeze();
+                }
+                else if (command.Equals("freeze OP2"))
+                {
+                    op_obj2.set_freeze();
+                }
+                else if (command.Equals("freeze OP3"))
+                {
+                    op_obj3.set_freeze();
+                }
+                else if (command.Equals("freeze OP4"))
+                {
+                    op_obj4.set_freeze();
+                }
+                else if (command.Equals("unfreeze OP1"))
+                {
+                    op_obj1.set_unfreeze();
+                }
+                else if (command.Equals("unfreeze OP2"))
+                {
+                    op_obj2.set_unfreeze();
+                }
+                else if (command.Equals("unfreeze OP3"))
+                {
+                    op_obj3.set_unfreeze();
+                }
+                else if (command.Equals("unfreeze OP4"))
+                {
+                    op_obj4.set_unfreeze();
+                }
+                else if (command.Equals("crash OP1"))
+                {
+                    op_obj1.crash();
+                }
+                else if (command.Equals("crash OP2"))
+                {
+                    op_obj2.crash();
+                }
+                else if (command.Equals("crash OP3"))
+                {
+                    op_obj3.crash();
+                }
+                else if (command.Equals("crash OP4"))
+                {
+                    op_obj4.crash();
+                }
             }
-            else if (command.Equals("start OP2"))
+            catch (System.Net.Sockets.SocketException)
             {
-                op_obj2.set_start(op2.operator_spec,1);
-            }
-            else if (command.Equals("start OP3"))
-            {
-                op_obj3.set_start(op3.operator_spec,1);
-            }
-            else if (command.Equals("start OP4"))
-            {
-                op_obj4.set_start(op4.operator_spec,1);
+                Console.WriteLine("Operator crashed.");
             }
         }
 

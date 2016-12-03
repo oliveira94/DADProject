@@ -56,6 +56,8 @@ public class opObject : MarshalByRefObject, IOperator
 
         static string op_spec;
 
+        static object tLock = new object();
+
         IOperator obj; //objecto remoto no proximo operador
 
         //struct remoting_interfaces.Tuple
@@ -98,6 +100,29 @@ public class opObject : MarshalByRefObject, IOperator
             outThread.Start();
         }
 
+        public void set_freeze()
+        {
+            Monitor.Enter(tLock);
+            try
+            {
+                Console.WriteLine("Operator frozen.");
+            }
+            finally
+            {
+
+            }
+        }
+
+        public void set_unfreeze()
+        {
+            Monitor.Exit(tLock);
+        }
+
+        public void crash()
+        {
+            Environment.Exit(0);
+        }
+
         //Converto each userInfo in a remoting_interfaces.Tuple
         public void readFile()
         {
@@ -132,83 +157,89 @@ public class opObject : MarshalByRefObject, IOperator
             {
                 Thread.Sleep(2000);
 
-                if (in_queue.Count > 0)
+                Monitor.Enter(tLock);
+                try
                 {
-                    string[] words = op_spec.Split(',');
-
-
-
-                    remoting_interfaces.Tuple outTuple;
-                    
-                    Console.WriteLine("   ");
-                    Console.WriteLine("ID: " + in_queue[0].getID());
-                    Console.WriteLine("User: " + in_queue[0].getUser());
-                    Console.WriteLine("URL: " + in_queue[0].getURL());
-
-                    if(words[0] == "FILTER")
+                    if (in_queue.Count > 0)
                     {
-                        outTuple = filter.doTweeters(in_queue[0], Int32.Parse(words[1]), words[2], words[3]);
-                        out_queue.Add(outTuple);
-                        in_queue.Remove(in_queue[0]);
-                        Console.WriteLine("Output from Operator:");
-                        Console.WriteLine(outTuple.getID());
-                        Console.WriteLine(outTuple.getUser());
-                        Console.WriteLine(outTuple.getURL());
-                    }
-                    if(words[0] == "CUSTOM")
-                    {
-                        List<string> Followers = new List<string>();
+                        string[] words = op_spec.Split(',');
 
-                        Console.WriteLine(in_queue[0]);
+                        remoting_interfaces.Tuple outTuple;
 
-                        Followers = custom.getoutput(words[1], words[3], in_queue[0]);
-                        foreach(string follower in Followers)
+                        Console.WriteLine("   ");
+                        Console.WriteLine("ID: " + in_queue[0].getID());
+                        Console.WriteLine("User: " + in_queue[0].getUser());
+                        Console.WriteLine("URL: " + in_queue[0].getURL());
+
+                        if (words[0] == "FILTER")
                         {
-                            Console.WriteLine("follower: " + follower);
-                            remoting_interfaces.Tuple Tuple = new remoting_interfaces.Tuple(0, follower,"");
-                            out_queue.Add(Tuple);
-                        }
-                        
-                        in_queue.Remove(in_queue[0]);
-                    }
-                    if(words[0] == "UNIQ")
-                    {
-                        outTuple = uniq.uniqTuple(in_queue[0], Int32.Parse(words[1]));
-                        out_queue.Add(outTuple);
-                        Console.WriteLine("Output from Operator:");
-                        Console.WriteLine(outTuple.getID());
-                        Console.WriteLine(outTuple.getUser());
-                        Console.WriteLine(outTuple.getURL());
-                        in_queue.Remove(in_queue[0]);
-                    }   
-                    if(words[0] == "DUP")
-                    {
-                        List<remoting_interfaces.Tuple> duplicatedTuple = dup.duplicate(in_queue[0]);
-                        
-                        foreach (remoting_interfaces.Tuple tuplo in duplicatedTuple)
-                        {
-                            out_queue.Add(tuplo);
+                            outTuple = filter.doTweeters(in_queue[0], Int32.Parse(words[1]), words[2], words[3]);
+                            out_queue.Add(outTuple);
+                            in_queue.Remove(in_queue[0]);
                             Console.WriteLine("Output from Operator:");
-                            Console.WriteLine(tuplo.getID());
-                            Console.WriteLine(tuplo.getUser());
-                            Console.WriteLine(tuplo.getURL());
+                            Console.WriteLine(outTuple.getID());
+                            Console.WriteLine(outTuple.getUser());
+                            Console.WriteLine(outTuple.getURL());
                         }
-                        duplicatedTuple.Remove(in_queue[0]);
-                        duplicatedTuple.Remove(in_queue[0]);
+                        if (words[0] == "CUSTOM")
+                        {
+                            List<string> Followers = new List<string>();
 
-                        in_queue.Remove(in_queue[0]);
+                            Console.WriteLine(in_queue[0]);
+
+                            Followers = custom.getoutput(words[1], words[3], in_queue[0]);
+                            foreach (string follower in Followers)
+                            {
+                                Console.WriteLine("follower: " + follower);
+                                remoting_interfaces.Tuple Tuple = new remoting_interfaces.Tuple(0, follower, "");
+                                out_queue.Add(Tuple);
+                            }
+
+                            in_queue.Remove(in_queue[0]);
+                        }
+                        if (words[0] == "UNIQ")
+                        {
+                            outTuple = uniq.uniqTuple(in_queue[0], Int32.Parse(words[1]));
+                            out_queue.Add(outTuple);
+                            Console.WriteLine("Output from Operator:");
+                            Console.WriteLine(outTuple.getID());
+                            Console.WriteLine(outTuple.getUser());
+                            Console.WriteLine(outTuple.getURL());
+                            in_queue.Remove(in_queue[0]);
+                        }
+                        if (words[0] == "DUP")
+                        {
+                            List<remoting_interfaces.Tuple> duplicatedTuple = dup.duplicate(in_queue[0]);
+
+                            foreach (remoting_interfaces.Tuple tuplo in duplicatedTuple)
+                            {
+                                out_queue.Add(tuplo);
+                                Console.WriteLine("Output from Operator:");
+                                Console.WriteLine(tuplo.getID());
+                                Console.WriteLine(tuplo.getUser());
+                                Console.WriteLine(tuplo.getURL());
+                            }
+                            duplicatedTuple.Remove(in_queue[0]);
+                            duplicatedTuple.Remove(in_queue[0]);
+
+                            in_queue.Remove(in_queue[0]);
+                        }
+                        if (words[0] == "COUNT")
+                        {
+                            outTuple = count.countMethod(in_queue[0]);
+                            out_queue.Add(outTuple);
+                            Console.WriteLine("Output from Operator:");
+                            Console.WriteLine(outTuple.getID());
+                            Console.WriteLine(outTuple.getUser());
+                            Console.WriteLine(outTuple.getURL());
+                            Console.WriteLine("Tuples count until now: " + count.getCount());
+                            in_queue.Remove(in_queue[0]);
+                        }
                     }
-                    if(words[0] == "COUNT")
-                    {
-                        outTuple = count.countMethod(in_queue[0]);
-                        out_queue.Add(outTuple);
-                        Console.WriteLine("Output from Operator:");
-                        Console.WriteLine(outTuple.getID());
-                        Console.WriteLine(outTuple.getUser());
-                        Console.WriteLine(outTuple.getURL());
-                        Console.WriteLine("Tuples count until now: " + count.getCount());
-                        in_queue.Remove(in_queue[0]);
-                    }
+                }
+                finally
+                {
+                    Monitor.Exit(tLock);
                 }
             }
         }

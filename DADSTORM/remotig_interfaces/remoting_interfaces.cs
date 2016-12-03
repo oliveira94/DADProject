@@ -65,6 +65,9 @@ namespace remoting_interfaces
         void readFile();
         void set_start(string op_spec, int first);
         void input_queue(Tuple tuple);
+        void set_freeze();
+        void set_unfreeze();
+        void crash();
     }
     public interface IfileToOperator
     {
