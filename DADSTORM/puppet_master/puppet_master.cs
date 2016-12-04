@@ -145,25 +145,25 @@ namespace puppet_master
             string[] words = command.Split(' ');
             try
             {
-                if (command.StartsWith("start"))
+                if (command.StartsWith("start")) // se o comando começar com "start"
                 {
-                    foreach (Operator op in op_list)
+                    foreach (Operator op in op_list) //percorremos todos os operadores na lista de operadores
                     {
-                        if (op.operator_id.Equals(words[1]))
+                        if (op.operator_id.Equals(words[1]))// se encontrarmos o operador especificado no comando
                         {
-                            if (words[1].Equals("OP1"))
+                            if (words[1].Equals("OP1"))// se o operador encontrado for o primeiro
                             {
-                                op_obj = (IOperator)Activator.GetObject(typeof(IOperator), routing(op.address, op.routing));
-                                op_obj.set_start(op.operator_spec, 0);
+                                op_obj = (IOperator)Activator.GetObject(typeof(IOperator), routing(op.address, op.routing)); // faz o routing do primeiro operador
+                                op_obj.set_start(op.operator_spec, 0); //faz start na replica resultada do routing
                             }
-                            else
+                            else // caso o operador encontrado não seja o primeiro
                             {
-                                string[] rep = op.address.Split(',');
+                                string[] rep = op.address.Split(','); // dividimos os seus URls
 
-                                foreach (string url in rep)
+                                foreach (string url in rep) //para cada URl das replicas do operador encontrado
                                 {
-                                    op_obj = (IOperator)Activator.GetObject(typeof(IOperator), url);
-                                    op_obj.set_start(op.operator_spec,1);
+                                    op_obj = (IOperator)Activator.GetObject(typeof(IOperator), url); // cria um objeto na replica
+                                    op_obj.set_start(op.operator_spec,1); // fazemos start na replica
                                 }
                             }
                         }                     
