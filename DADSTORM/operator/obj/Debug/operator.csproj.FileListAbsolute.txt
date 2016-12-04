@@ -5,14 +5,6 @@ C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\DADSTORM\operator\bin\Debug\remotig_
 C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\DADSTORM\operator\bin\Debug\remotig_interfaces.pdb
 C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\DADSTORM\operator\obj\Debug\@operator.exe
 C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\DADSTORM\operator\obj\Debug\@operator.pdb
-C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\operator\bin\Debug\@operator.exe.config
-C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\operator\obj\Debug\@operator.exe
-C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\operator\obj\Debug\@operator.pdb
-C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\operator\bin\Debug\@operator.exe
-C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\operator\bin\Debug\@operator.pdb
-C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\operator\bin\Debug\remotig_interfaces.dll
-C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\operator\bin\Debug\remotig_interfaces.pdb
-C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\operator\obj\Debug\operator.csprojResolveAssemblyReference.cache
 \\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\operator\bin\Debug\@operator.exe.config
 \\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\operator\obj\Debug\@operator.exe
 \\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\operator\obj\Debug\@operator.pdb
@@ -29,3 +21,11 @@ C:\Users\diogo\Documents\GitHub\FindSomethingElse\DADSTORM\operator\bin\Debug\re
 C:\Users\diogo\Documents\GitHub\FindSomethingElse\DADSTORM\operator\obj\Debug\operator.csprojResolveAssemblyReference.cache
 C:\Users\diogo\Documents\GitHub\FindSomethingElse\DADSTORM\operator\obj\Debug\@operator.exe
 C:\Users\diogo\Documents\GitHub\FindSomethingElse\DADSTORM\operator\obj\Debug\@operator.pdb
+C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\operator\bin\Debug\@operator.exe.config
+C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\operator\bin\Debug\@operator.exe
+C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\operator\bin\Debug\@operator.pdb
+C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\operator\bin\Debug\remotig_interfaces.dll
+C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\operator\bin\Debug\remotig_interfaces.pdb
+C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\operator\obj\Debug\operator.csprojResolveAssemblyReference.cache
+C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\operator\obj\Debug\@operator.exe
+C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\operator\obj\Debug\@operator.pdb

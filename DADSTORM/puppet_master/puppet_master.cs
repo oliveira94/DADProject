@@ -80,7 +80,7 @@ namespace puppet_master
                         }
 
                         op.operator_spec = words[8 + op.rep_factor + 1]; // guardamos o tipo de operador 
-                        if (!op.operator_spec.Equals("COUNT")) // Se o tipo for diferente de "count" significa que ainda falta concatenar os parametros
+                        if (!op.operator_spec.Equals("COUNT") && !op.operator_spec.Equals("DUP")) // Se o tipo for diferente de "count" significa que ainda falta concatenar os parametros
                         {
                             op.operator_spec = op.operator_spec + "," + words[(8 + op.rep_factor + 1) + 1]; //concatenamos o tipo de operador com os seus parametros
                         }

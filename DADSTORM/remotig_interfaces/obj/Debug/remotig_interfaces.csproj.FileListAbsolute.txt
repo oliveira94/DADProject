@@ -8,12 +8,11 @@ C:\Users\lj0se\Desktop\IST\1º Semestre\DAD\DADSTORM\remotig_interfaces\obj\Debu
 \\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\remotig_interfaces\obj\Debug\remotig_interfaces.csprojResolveAssemblyReference.cache
 \\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\remotig_interfaces\obj\Debug\remotig_interfaces.dll
 \\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\remotig_interfaces\obj\Debug\remotig_interfaces.pdb
-C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\remotig_interfaces\bin\Debug\remotig_interfaces.dll
-C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\remotig_interfaces\bin\Debug\remotig_interfaces.pdb
-C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\remotig_interfaces\obj\Debug\remotig_interfaces.csprojResolveAssemblyReference.cache
-C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\remotig_interfaces\obj\Debug\remotig_interfaces.dll
-C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\remotig_interfaces\obj\Debug\remotig_interfaces.pdb
 C:\Users\diogo\Documents\GitHub\FindSomethingElse\DADSTORM\remotig_interfaces\bin\Debug\remotig_interfaces.dll
 C:\Users\diogo\Documents\GitHub\FindSomethingElse\DADSTORM\remotig_interfaces\bin\Debug\remotig_interfaces.pdb
 C:\Users\diogo\Documents\GitHub\FindSomethingElse\DADSTORM\remotig_interfaces\obj\Debug\remotig_interfaces.dll
 C:\Users\diogo\Documents\GitHub\FindSomethingElse\DADSTORM\remotig_interfaces\obj\Debug\remotig_interfaces.pdb
+C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\remotig_interfaces\bin\Debug\remotig_interfaces.dll
+C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\remotig_interfaces\bin\Debug\remotig_interfaces.pdb
+C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\remotig_interfaces\obj\Debug\remotig_interfaces.dll
+C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\remotig_interfaces\obj\Debug\remotig_interfaces.pdb

@@ -79,7 +79,7 @@ public class opObject : MarshalByRefObject, IOperator
         {
             start = true;
             op_spec = op_spec_in;
-
+            Console.WriteLine("Triggered");
             if(firstTime == 0)
             {
                 //thread to convert each line of tweeters.dat in a remoting_interfaces.Tuple
@@ -240,7 +240,7 @@ public class opObject : MarshalByRefObject, IOperator
 
         public void process_outQueue()
         {
-            while (true)
+           /* while (true)
             {
                 if (!next_url.Equals("nulo") )
                 {
@@ -252,6 +252,7 @@ public class opObject : MarshalByRefObject, IOperator
                                             
                 }
             }
+            */
         }
         private static string routing(string urls, string routing)
         {
@@ -349,8 +350,10 @@ public class opObject : MarshalByRefObject, IOperator
         {
             public List<String> getoutput(string dll, string method, remoting_interfaces.Tuple Tuple)
             {
+
                 List<string> outputUsers = new List<string>();
-                Assembly testDLL = Assembly.LoadFile(@"\\Mac\Home\Documents\GitHub\FindSomethingElse\DADSTORM\" + dll);
+                string path = Directory.GetCurrentDirectory();           
+                Assembly testDLL = Assembly.LoadFile(path + dll);
 
                 foreach (var type in testDLL.GetExportedTypes())
                 {
