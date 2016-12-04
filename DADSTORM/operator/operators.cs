@@ -47,7 +47,7 @@ public class opObject : MarshalByRefObject, IOperator
     {
         IOperator op_obj;
         static string next_url; //url do proximo operador
-        static string next_op_spec; //tipo do proximo operador
+        static string next_routing; //tipo de routing do operador downstream
         static public bool start = false;
         List<remoting_interfaces.Tuple> queue = new List<remoting_interfaces.Tuple>();
 
@@ -66,19 +66,13 @@ public class opObject : MarshalByRefObject, IOperator
         //    public string user;
         //    public string URL;
         //}
-
-        public void next_op(string url, string op_spec)
+        public void next_op(string url, string route)
         {
+
             next_url = url;
-            next_op_spec = op_spec;
-            Console.WriteLine("Next URL->" + next_url + "   Next op_spec->" + next_op_spec);
-
-            if (!next_url.Equals("nulo"))
-            {
-                obj = (IOperator)Activator.GetObject(typeof(IOperator), next_url); // cria um objeto remoto no proximo operador (caso existir)   
-            }
-
-
+            next_routing = route;
+            Console.WriteLine("Next URL_list->" + next_url);
+            Console.WriteLine("Next OP routing->" + next_routing);
         }
 
         public void set_start(string op_spec_in, int firstTime)
@@ -259,14 +253,26 @@ public class opObject : MarshalByRefObject, IOperator
                 }
             }
         }
-
-        public void input_queue(remoting_interfaces.Tuple tuple)
+        private static string routing(string urls, string routing)
         {
-            if (!start || queue.Count > 0)                 //se existir uma fila de espera ou o estado do operador for inativo
+            string[] words = urls.Split(',');       // contem todos os URls do  downstream operador 
+            if (routing.Equals("primary"))
             {
-                queue.Add(tuple);                          //coloca o tuplo na ultima posição da fila de espera
+                return words[0];
             }
+            else if (routing.Equals("random"))
+            {
+                Random rnd = new Random();
+                int rep = rnd.Next((words.Length)); // gera um numero de 1 até ao replication factor do operador
+                return words[rep];
+            }
+            else
+            {
+                return words[0];
+            }
+            return "error";
         }
+    
 
         class FILTER : operators
         {

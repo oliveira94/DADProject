@@ -17,10 +17,7 @@ namespace puppet_master
         public delegate void RemoteAsyncDelegate(int rep_factor, string replica_URL, string whatoperator, string op_id); //irá apontar para a função a ser chamada assincronamente
         static AsyncCallback funcaoCallBack; //irá chamar uma função quando a função assincrona terminar
         static Ipcs pcs_obj;
-        static IOperator op_obj1;
-        static IOperator op_obj2;
-        static IOperator op_obj3;
-        static IOperator op_obj4;
+        static IOperator op_obj;
   
         public struct Operator
         {
@@ -32,10 +29,8 @@ namespace puppet_master
             public string operator_spec;
         }
 
-        static private Operator op1; //guardar estes operadores em List<Operator> fica dinamico
-        static private Operator op2;
-        static private Operator op3;
-        static private Operator op4;
+        static List<Operator> op_list = new List<Operator>(); //lista de todos os operadores
+        static List<IOperator> op_obj_list = new List<IOperator>();//lista de todos os objetos que existem nos operadores
 
         static void Main(string[] args)
         {
@@ -50,236 +45,141 @@ namespace puppet_master
                 read_command(command);
             }       
         }
-      
+
         static void read_conf_file()
         {
-            op1 = new Operator();
-            op2 = new Operator();
-            op3 = new Operator();
-            op4 = new Operator();
-
             string line;
 
-            System.IO.StreamReader file = new System.IO.StreamReader(@"..\..\..\conf_file.txt"); // Mudar o path para testar
+            System.IO.StreamReader file = new System.IO.StreamReader(@"..\..\..\conf_file.txt");
 
             while ((line = file.ReadLine()) != null)
             {
                 string[] words = line.Split(' ');
-                foreach (string s in words)
+                foreach (string word in words)
                 {
-                    if (words[0] == "Semantics")
+                    if (word == "Semantics")
                     {
                         semantics = words[1];
                     }
-                    else if (words[0] == "LoggingLevel")
+                    else if (word == "LoggingLevel")
                     {
                         loggin_level = words[1];
                     }
-                    else if (words[0] == "OP1")
+                    else if (word.StartsWith("OP") && word == words[0]) // se a palavra for começar por OP e for a primeira palavra da lista de palavras
                     {
-                        op1.operator_id = "OP1";
-                        op1.input_ops = words[2];
-                        op1.rep_factor = Int32.Parse(words[4]);
-                        op1.routing = words[6];
-                        op1.address = words[8];
+                        Operator op = new Operator();
+                        op.operator_id = words[0];
+                        op.input_ops = words[2];
+                        op.rep_factor = Int32.Parse(words[4]);
+                        op.routing = words[6];
+                        op.address = words[8];
 
-                        for (int i = 1; i < op1.rep_factor; i++) //para o apanhar o numero de URLs especificado em rep_factor 
+                        for (int i = 1; i < op.rep_factor; i++) //para o apanhar o numero de URLs especificado em rep_factor 
                         {
-                            op1.address = op1.address + words[8 + i];
+                            op.address = op.address + words[8 + i];
                         }
 
-                        op1.operator_spec = words[8 + op1.rep_factor + 1]; // guardamos o tipo de operador 
-                        if (!op1.operator_spec.Equals("COUNT")) // Se o tipo for diferente de "count" significa que ainda falta concatenar os parametros
+                        op.operator_spec = words[8 + op.rep_factor + 1]; // guardamos o tipo de operador 
+                        if (!op.operator_spec.Equals("COUNT")) // Se o tipo for diferente de "count" significa que ainda falta concatenar os parametros
                         {
-                            op1.operator_spec = op1.operator_spec + "," + words[(8 + op1.rep_factor + 1) + 1]; //concatenamos o tipo de operador com os seus parametros
+                            op.operator_spec = op.operator_spec + "," + words[(8 + op.rep_factor + 1) + 1]; //concatenamos o tipo de operador com os seus parametros
                         }
+                        op_list.Add(op);
                     }
-                    else if (words[0] == "OP2")
-                    {
-                        op2.operator_id = "OP2";
-                        op2.input_ops = words[2];
-                        op2.rep_factor = Int32.Parse(words[4]);
-                        op2.routing = words[6];
-                        op2.address = words[8];
-
-                        for (int i = 1; i < op2.rep_factor; i++) 
-                        {
-                            op2.address = op2.address + words[8 + i];
-                        }
-
-                        op2.operator_spec = words[8 + op2.rep_factor + 1]; 
-                        if (!op2.operator_spec.Equals("COUNT"))  
-                        {
-                            op2.operator_spec = op2.operator_spec + "," + words[(8 + op2.rep_factor + 1) + 1]; 
-                        }
-                    }
-                    else if (words[0] == "OP3")
-                    {
-                        op3.operator_id = "OP3";
-                        op3.input_ops = words[2];
-                        op3.rep_factor = Int32.Parse(words[4]);
-                        op3.routing = words[6];
-                        op3.address = words[8];
-
-                        for (int i = 1; i < op2.rep_factor; i++)  
-                        {
-                            op3.address = op3.address + words[8 + i];
-                        }
-
-                        op3.operator_spec = words[8 + op3.rep_factor + 1];
-                        if (!op3.operator_spec.Equals("COUNT"))
-                        {
-                            op3.operator_spec = op3.operator_spec + "," + words[(8 + op3.rep_factor + 1) + 1];
-                        }
-                    }
-                    else if (words[0] == "OP4")
-                    {
-                        op4.operator_id = "OP4";
-                        op4.input_ops = words[2];
-                        op4.rep_factor = Int32.Parse(words[4]);
-                        op4.routing = words[6];
-                        op4.address = words[8];
-                        for (int i = 1; i < op4.rep_factor; i++) 
-                        {
-                            op4.address = op4.address + words[8 + i];
-                        }
-
-                        op4.operator_spec = words[8 + op4.rep_factor + 1];
-                        if (!op4.operator_spec.Equals("COUNT") )
-                        {
-                            op4.operator_spec = op4.operator_spec + "," + words[(8 + op4.rep_factor + 1) + 1];
-                        }
-                    }
-
                 }
-            }       
+            }
         }
 
         static public void create_replicas()
         {
-             pcs_obj = (Ipcs)Activator.GetObject(typeof(Ipcs), "tcp://localhost:10000/pcs");
-            
-             funcaoCallBack = new AsyncCallback(OnExit);//aponta para a função de retorno da função assincrona
-             RemoteAsyncDelegate dele = new RemoteAsyncDelegate(pcs_obj.create_replica);//aponta para a função a ser chamada assincronamente
+            pcs_obj = (Ipcs)Activator.GetObject(typeof(Ipcs), "tcp://localhost:10000/pcs");
 
-             IAsyncResult result = dele.BeginInvoke(op1.rep_factor, op1.address, op1.operator_spec, op1.operator_id, funcaoCallBack, null);
+            funcaoCallBack = new AsyncCallback(OnExit);//aponta para a função de retorno da função assincrona
+            RemoteAsyncDelegate dele = new RemoteAsyncDelegate(pcs_obj.create_replica);//aponta para a função a ser chamada assincronamente
 
-             result = dele.BeginInvoke(op2.rep_factor, op2.address, op2.operator_spec, op2.operator_id, funcaoCallBack, null);
-             result = dele.BeginInvoke(op3.rep_factor, op3.address, op3.operator_spec, op3.operator_id, funcaoCallBack, null);
-             result = dele.BeginInvoke(op4.rep_factor, op4.address, op4.operator_spec, op4.operator_id, funcaoCallBack, null);         
+            foreach (Operator op in op_list)
+            {
+                IAsyncResult result = dele.BeginInvoke(op.rep_factor, op.address, op.operator_spec, op.operator_id, funcaoCallBack, null);
+
+            }
+
         }
-                   
+
         static public void next_Operator() //envia informação a cada operador sobre o operador seguinte
         {
-          op_obj1 = (IOperator)Activator.GetObject(typeof(IOperator), routing(op1.operator_id));//cria um objeto remoto em OP1
-          op_obj1.next_op(routing(op2.operator_id), op2.operator_spec);                         //envia o URL e o tipo de operador do OP2 para OP1 
 
-          op_obj2 = (IOperator)Activator.GetObject(typeof(IOperator), routing(op2.operator_id));
-          op_obj2.next_op(routing(op3.operator_id), op3.operator_spec);
+            for (int i = 0; i < (op_list.Count - 1); i++)
+            {
+                string[] words = op_list[i].address.Split(','); //cria uma lista com os URLs de todos do operador atual
+                foreach (string url in words)
+                {
+                    op_obj = (IOperator)Activator.GetObject(typeof(IOperator), url); //cria um objeto remoto na replica do operador atual
+                    op_obj.next_op(op_list[i + 1].address, op_list[i + 1].routing); //envia ao operador os URLs do operador downstream
+                }
+            }
 
-          op_obj3 = (IOperator)Activator.GetObject(typeof(IOperator), routing(op3.operator_id));
-          op_obj3.next_op(routing(op4.operator_id), op4.operator_spec);
-
-          op_obj4 = (IOperator)Activator.GetObject(typeof(IOperator), routing(op4.operator_id));
-          op_obj4.next_op("nulo", "nulo");                       
-         }
-  
-
-        private static string routing(string op_id)         //terá um argumento para o tipo de routing (ainda está em primary)
+        }
+        private static string routing(string urls, string routing)
         {
-            string[] words = op1.address.Split(',');       // contem todos os URls do OP1   
-            string[] words2 = op2.address.Split(',');          
-            string[] words3 = op3.address.Split(',');             
-            string[] words4 = op4.address.Split(',');
-
-            if(op_id.Equals("OP1"))
+            string[] words = urls.Split(',');       // contem todos os URls do  downstream operador 
+            if (routing.Equals("primary"))
             {
-               return words[0];           
+                return words[0];
             }
-            else if (op_id.Equals("OP2"))
+            else if (routing.Equals("random"))
             {
-                return words2[0];
+                Random rnd = new Random();
+                int rep = rnd.Next((words.Length)); // gera um numero de 1 até ao replication factor do operador
+                return words[rep];
             }
-            else if (op_id.Equals("OP3"))
+            else
             {
-                return words3[0];
+                return words[0];
             }
-            else if (op_id.Equals("OP4"))
-            {
-                return words4[0];
-            }
-            return "Invalid Operator id";
+            return "error";
         }
 
         static void read_command(string command)
         {
             List<string> output = new List<string>();
-
+            string[] words = command.Split(' ');
             try
             {
-                if (command.Equals("start OP1"))
+                if (command.StartsWith("start"))
                 {
-                    op_obj1.set_start(op1.operator_spec, 0);
-                }
-                else if (command.Equals("start OP2"))
-                {
-                    op_obj2.set_start(op2.operator_spec, 1);
-                }
-                else if (command.Equals("start OP3"))
-                {
-                    op_obj3.set_start(op3.operator_spec, 1);
-                }
-                else if (command.Equals("start OP4"))
-                {
-                    op_obj4.set_start(op4.operator_spec, 1);
+                    foreach (Operator op in op_list)
+                    {
+                        if (op.operator_id.Equals(words[1]))
+                        {
+                            if (words[1].Equals("OP1"))
+                            {
+                                op_obj = (IOperator)Activator.GetObject(typeof(IOperator), routing(op.address, op.routing));
+                                op_obj.set_start(op.operator_spec, 0);
+                            }
+                            else
+                            {
+                                string[] rep = op.address.Split(',');
+
+                                foreach (string url in rep)
+                                {
+                                    op_obj = (IOperator)Activator.GetObject(typeof(IOperator), url);
+                                    op_obj.set_start(op.operator_spec,1);
+                                }
+                            }
+                        }                     
+                    }
                 }
                 else if (command.Equals("freeze OP1"))
                 {
-                    op_obj1.set_freeze();
-                }
-                else if (command.Equals("freeze OP2"))
-                {
-                    op_obj2.set_freeze();
-                }
-                else if (command.Equals("freeze OP3"))
-                {
-                    op_obj3.set_freeze();
-                }
-                else if (command.Equals("freeze OP4"))
-                {
-                    op_obj4.set_freeze();
+
                 }
                 else if (command.Equals("unfreeze OP1"))
                 {
-                    op_obj1.set_unfreeze();
-                }
-                else if (command.Equals("unfreeze OP2"))
-                {
-                    op_obj2.set_unfreeze();
-                }
-                else if (command.Equals("unfreeze OP3"))
-                {
-                    op_obj3.set_unfreeze();
-                }
-                else if (command.Equals("unfreeze OP4"))
-                {
-                    op_obj4.set_unfreeze();
+
                 }
                 else if (command.Equals("crash OP1"))
                 {
-                    op_obj1.crash();
-                }
-                else if (command.Equals("crash OP2"))
-                {
-                    op_obj2.crash();
-                }
-                else if (command.Equals("crash OP3"))
-                {
-                    op_obj3.crash();
-                }
-                else if (command.Equals("crash OP4"))
-                {
-                    op_obj4.crash();
+
                 }
             }
             catch (System.Net.Sockets.SocketException)
@@ -291,15 +191,15 @@ namespace puppet_master
         static public void print_var() // testar se as variáveis foram guardadas de acordo com o ficheiro de configuração
         {
             Console.WriteLine("ALL vars: \r\n");
-            Console.WriteLine("-operator_id " + op1.operator_id + " -input:" + op1.input_ops + " -rep_fact:" + op1.rep_factor + " -routing:" + op1.routing + " -address:" + op1.address + " -operator:" + op1.operator_spec +"\r\n");
-            Console.WriteLine("-operator_id " + op2.operator_id + " -input:" + op2.input_ops + " -rep_fact:" + op2.rep_factor + " -routing:" + op2.routing + " -address:" + op2.address + " -operator:" + op2.operator_spec + "\r\n");
-            Console.WriteLine("-operator_id " + op3.operator_id + " -input:" + op3.input_ops + " -rep_fact:" + op3.rep_factor + " -routing:" + op3.routing + " -address:" + op3.address + " -operator:" + op3.operator_spec + "\r\n");
-            Console.WriteLine("-operator_id " + op4.operator_id + " -input:" + op4.input_ops + " -rep_fact:" + op4.rep_factor + " -routing:" + op4.routing + " -address:" + op4.address + " -operator:" + op4.operator_spec + "\r\n");
+            foreach (Operator op in op_list)
+            {
+                Console.WriteLine("-operator_id " + op.operator_id + " -input:" + op.input_ops + " -rep_fact:" + op.rep_factor + " -routing:" + op.routing + " -address:" + op.address + " -operator:" + op.operator_spec + "\r\n");
+            }
         }
 
         public static void OnExit(IAsyncResult ar)
         {
-            Console.WriteLine("Functiodfdfdn has returned");    
+             
         }
     }
 

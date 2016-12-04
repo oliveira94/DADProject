@@ -61,10 +61,9 @@ namespace remoting_interfaces
     }
     public interface IOperator
     {
-        void next_op(string url, string op_spec);
+        void next_op(string url, string routing);
         void readFile();
         void set_start(string op_spec, int first);
-        void input_queue(Tuple tuple);
         void set_freeze();
         void set_unfreeze();
         void crash();
