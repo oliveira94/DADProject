@@ -46,8 +46,8 @@ namespace @operator
 public class opObject : MarshalByRefObject, IOperator
     {
         IOperator op_obj;
-        static string next_url; //url do proximo operador
-        static string next_routing; //tipo de routing do operador downstream
+        static string next_url = "null"; //url do proximo operador
+        static string next_routing = "null"; //tipo de routing do operador downstream
         static public bool start = false;
         List<remoting_interfaces.Tuple> queue = new List<remoting_interfaces.Tuple>();
 
@@ -130,16 +130,19 @@ public class opObject : MarshalByRefObject, IOperator
                 in_queue.Add(Tuple);
             }
         }
-
+        public void add_to_inQueue(remoting_interfaces.Tuple tp)
+        {
+            in_queue.Add(tp);
+        }
         public void process_inQueue()
         {
             remoting_interfaces.Tuple Tuple1 = new remoting_interfaces.Tuple(1, "user2", "www.ulisboa.pt");
             remoting_interfaces.Tuple Tuple2 = new remoting_interfaces.Tuple(1, "user3", "www.tecnico.ulisboa.pt");
             remoting_interfaces.Tuple Tuple3 = new remoting_interfaces.Tuple(3, "user3", "www.tecnico.ulisboa.pt");
 
-            in_queue.Add(Tuple1);
-            in_queue.Add(Tuple2);
-            in_queue.Add(Tuple3);
+            //in_queue.Add(Tuple1);
+            //in_queue.Add(Tuple2);
+            //in_queue.Add(Tuple3);
 
             FILTER filter = new FILTER();
             CUSTOM custom = new CUSTOM();
@@ -240,22 +243,22 @@ public class opObject : MarshalByRefObject, IOperator
 
         public void process_outQueue()
         {
-           /* while (true)
-            {
-                if (!next_url.Equals("nulo") )
-                {
-                    if(out_queue.Count > 0)
-                    {
-                        //obj.input_queue(out_queue[0]);
-                        //out_queue.Remove(out_queue[0]);
-                    }
-                                            
-                }
-            }
-            */
+           while(true)
+           {
+               if(out_queue.Count > 0)
+               {
+                   if (!next_url.Equals("null"))
+                   {
+                       op_obj = (IOperator)Activator.GetObject(typeof(IOperator), routing(next_url, next_routing));
+                       op_obj.add_to_inQueue(out_queue[0]);
+                       out_queue.Remove(out_queue[0]);
+                   }
+               }
+           }
         }
         private static string routing(string urls, string routing)
         {
+          
             string[] words = urls.Split(',');       // contem todos os URls do  downstream operador 
             if (routing.Equals("primary"))
             {
@@ -350,10 +353,10 @@ public class opObject : MarshalByRefObject, IOperator
         {
             public List<String> getoutput(string dll, string method, remoting_interfaces.Tuple Tuple)
             {
-
+                Console.WriteLine(dll);
                 List<string> outputUsers = new List<string>();
-                string path = Directory.GetCurrentDirectory();           
-                Assembly testDLL = Assembly.LoadFile(path + dll);
+                string path = Directory.GetCurrentDirectory();
+                Assembly testDLL = Assembly.LoadFile(@"C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\" + dll);
 
                 foreach (var type in testDLL.GetExportedTypes())
                 {

@@ -35,6 +35,7 @@ namespace puppet_master
         static void Main(string[] args)
         {
             read_conf_file();
+            print_var();
             create_replicas();
             next_Operator();
      
@@ -69,20 +70,20 @@ namespace puppet_master
                     {
                         Operator op = new Operator();
                         op.operator_id = words[0];
-                        op.input_ops = words[2];
-                        op.rep_factor = Int32.Parse(words[4]);
-                        op.routing = words[6];
-                        op.address = words[8];
+                        op.input_ops = words[3];
+                        op.rep_factor = Int32.Parse(words[6]);
+                        op.routing = words[8];
+                        op.address = words[10];
 
                         for (int i = 1; i < op.rep_factor; i++) //para o apanhar o numero de URLs especificado em rep_factor 
                         {
-                            op.address = op.address + words[8 + i];
+                            op.address = op.address + words[10 + i];
                         }
 
-                        op.operator_spec = words[8 + op.rep_factor + 1]; // guardamos o tipo de operador 
+                        op.operator_spec = words[10 + op.rep_factor + 2]; // guardamos o tipo de operador 
                         if (!op.operator_spec.Equals("COUNT") && !op.operator_spec.Equals("DUP")) // Se o tipo for diferente de "count" significa que ainda falta concatenar os parametros
                         {
-                            op.operator_spec = op.operator_spec + "," + words[(8 + op.rep_factor + 1) + 1]; //concatenamos o tipo de operador com os seus parametros
+                            op.operator_spec = op.operator_spec + "," + words[(10 + op.rep_factor + 2) + 1]; //concatenamos o tipo de operador com os seus parametros
                         }
                         op_list.Add(op);
                     }

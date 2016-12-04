@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace remoting_interfaces
 {
+    [Serializable]
     public class Tuple
     {
         int id;
@@ -64,6 +65,7 @@ namespace remoting_interfaces
         void next_op(string url, string routing);
         void readFile();
         void set_start(string op_spec, int first);
+        void add_to_inQueue(remoting_interfaces.Tuple tp);
         void set_freeze();
         void set_unfreeze();
         void crash();
