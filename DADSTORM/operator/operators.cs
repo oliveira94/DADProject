@@ -117,6 +117,19 @@ public class opObject : MarshalByRefObject, IOperator
             Environment.Exit(0);
         }
 
+        public void Wait(int time)
+        {
+            Monitor.Enter(tLock);
+            try
+            {
+                Thread.Sleep(time);
+            }
+            finally
+            {
+                Monitor.Exit(tLock);
+            }
+        }
+
         //Converto each userInfo in a remoting_interfaces.Tuple
         public void readFile()
         {
