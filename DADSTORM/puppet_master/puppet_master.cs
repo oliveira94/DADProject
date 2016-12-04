@@ -129,7 +129,7 @@ namespace puppet_master
             else if (routing.Equals("random"))
             {
                 Random rnd = new Random();
-                int rep = rnd.Next((words.Length)); // gera um numero de 1 até ao replication factor do operador
+                int rep = rnd.Next((words.Length)); // gera um numero de 0 até ao replication factor do operador
                 return words[rep];
             }
             else
@@ -154,7 +154,7 @@ namespace puppet_master
                             if (words[1].Equals("OP1"))// se o operador encontrado for o primeiro
                             {
                                 op_obj = (IOperator)Activator.GetObject(typeof(IOperator), routing(op.address, op.routing)); // faz o routing do primeiro operador
-                                op_obj.set_start(op.operator_spec, 0); //faz start na replica resultada do routing
+                                op_obj.set_start(op.operator_spec, 0); //faz start na replica resultada do routing // FALTA ASSINCRONIA!!!                               
                             }
                             else // caso o operador encontrado não seja o primeiro
                             {
@@ -163,10 +163,11 @@ namespace puppet_master
                                 foreach (string url in rep) //para cada URl das replicas do operador encontrado
                                 {
                                     op_obj = (IOperator)Activator.GetObject(typeof(IOperator), url); // cria um objeto na replica
-                                    op_obj.set_start(op.operator_spec,1); // fazemos start na replica
-                                }
+                                    op_obj.set_start(op.operator_spec,1); // fazemos start na replica                                   
+                                }                             
                             }
-                        }                     
+                            break;
+                        }                        
                     }
                 }
                 else if (command.Equals("freeze OP1"))
