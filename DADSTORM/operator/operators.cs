@@ -60,6 +60,12 @@ public class opObject : MarshalByRefObject, IOperator
 
         IOperator obj; //objecto remoto no proximo operador
 
+        //struct remoting_interfaces.Tuple
+        //{
+        //    public int id;
+        //    public string user;
+        //    public string URL;
+        //}
         public void next_op(string url, string route)
         {
 
@@ -170,13 +176,10 @@ public class opObject : MarshalByRefObject, IOperator
 
                         remoting_interfaces.Tuple outTuple;
 
-                        if(in_queue[0].getID() != 0)
-                        {
-                            Console.WriteLine("   ");
-                            Console.WriteLine("ID: " + in_queue[0].getID());
-                            Console.WriteLine("User: " + in_queue[0].getUser());
-                            Console.WriteLine("URL: " + in_queue[0].getURL());
-                        }
+                        Console.WriteLine("   ");
+                        Console.WriteLine("ID: " + in_queue[0].getID());
+                        Console.WriteLine("User: " + in_queue[0].getUser());
+                        Console.WriteLine("URL: " + in_queue[0].getURL());
 
                         if (words[0] == "FILTER")
                         {
@@ -191,6 +194,8 @@ public class opObject : MarshalByRefObject, IOperator
                         if (words[0] == "CUSTOM")
                         {
                             List<string> Followers = new List<string>();
+
+                            Console.WriteLine(in_queue[0]);
 
                             Followers = custom.getoutput(words[1], words[3], in_queue[0]);
                             foreach (string follower in Followers)
@@ -207,7 +212,9 @@ public class opObject : MarshalByRefObject, IOperator
                             outTuple = uniq.uniqTuple(in_queue[0], Int32.Parse(words[1]));
                             out_queue.Add(outTuple);
                             Console.WriteLine("Output from Operator:");
+                            Console.WriteLine(outTuple.getID());
                             Console.WriteLine(outTuple.getUser());
+                            Console.WriteLine(outTuple.getURL());
                             in_queue.Remove(in_queue[0]);
                         }
                         if (words[0] == "DUP")
@@ -231,15 +238,11 @@ public class opObject : MarshalByRefObject, IOperator
                         {
                             outTuple = count.countMethod(in_queue[0]);
                             out_queue.Add(outTuple);
-                            if(in_queue[0].getID() != 0)
-                            {
-                                Console.WriteLine("Output from Operator:");
-                                Console.WriteLine(outTuple.getID());
-                                Console.WriteLine(outTuple.getUser());
-                                Console.WriteLine(outTuple.getURL());
-                                Console.WriteLine("Tuples count until now: " + count.getCount());
-                            }
-                            
+                            Console.WriteLine("Output from Operator:");
+                            Console.WriteLine(outTuple.getID());
+                            Console.WriteLine(outTuple.getUser());
+                            Console.WriteLine(outTuple.getURL());
+                            Console.WriteLine("Tuples count until now: " + count.getCount());
                             in_queue.Remove(in_queue[0]);
                         }
                     }
@@ -363,9 +366,10 @@ public class opObject : MarshalByRefObject, IOperator
         {
             public List<String> getoutput(string dll, string method, remoting_interfaces.Tuple Tuple)
             {
+                Console.WriteLine(dll);
                 List<string> outputUsers = new List<string>();
                 string path = Directory.GetCurrentDirectory();
-                Assembly testDLL = Assembly.LoadFile(@"\\Mac\Home\Desktop\GitHub\FindSomethingElse\DADSTORM\" + dll);
+                Assembly testDLL = Assembly.LoadFile(@"C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\" + dll);
 
                 foreach (var type in testDLL.GetExportedTypes())
                 {
@@ -486,15 +490,7 @@ public class opObject : MarshalByRefObject, IOperator
 
             public remoting_interfaces.Tuple countMethod(remoting_interfaces.Tuple Tuple)
             {
-                if(Tuple.getID() != 0)
-                {
-                    count++;
-                    
-                }
-                else
-                {
-                    Tuple.setID(0);
-                }
+                count++;
                 return Tuple;
             }
 
