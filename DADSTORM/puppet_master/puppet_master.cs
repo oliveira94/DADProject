@@ -7,6 +7,7 @@ using System.Threading;
 using System.Collections.Generic;
 using remoting_interfaces;
 using System.Text.RegularExpressions;
+using System.IO;
 
 namespace puppet_master
 {
@@ -38,6 +39,7 @@ namespace puppet_master
             print_var();
             create_replicas();
             next_Operator();
+            read_from_file();
      
             Console.WriteLine("Input (start OP{1-4}) command");
             while(true)
@@ -206,6 +208,25 @@ namespace puppet_master
         public static void OnExit(IAsyncResult ar)
         {
              
+        }
+
+        public static void read_from_file()
+        {
+            string line;
+
+            try
+            {
+                System.IO.StreamReader file = new System.IO.StreamReader(@"..\..\..\sefet.txt");
+
+                while ((line = file.ReadLine()) != null)
+                {
+                    read_command(line);
+                }
+            }
+            catch(FileNotFoundException)
+            {
+                Console.WriteLine("Commands file not found.");
+            }
         }
     }
 
