@@ -6,7 +6,7 @@ using System.Collections;
 using System.Threading;
 using System.Collections.Generic;
 using remoting_interfaces;
-
+using System.Text.RegularExpressions;
 
 namespace puppet_master
 {
@@ -164,11 +164,11 @@ namespace puppet_master
                                 foreach (string url in rep) //para cada URl das replicas do operador encontrado
                                 {
                                     op_obj = (IOperator)Activator.GetObject(typeof(IOperator), url); // cria um objeto na replica
-                                    op_obj.set_start(op.operator_spec,1); // fazemos start na replica                                   
-                                }                             
+                                    op_obj.set_start(op.operator_spec, 1); // fazemos start na replica                                   
+                                }
                             }
                             break;
-                        }                        
+                        }
                     }
                 }
                 else if (command.Equals("freeze OP1"))
@@ -182,6 +182,10 @@ namespace puppet_master
                 else if (command.Equals("crash OP1"))
                 {
 
+                }
+                else if (command.StartsWith("Wait"))
+                {
+                    Thread.Sleep(Int32.Parse(Regex.Match(words[1], @"\d+").Value));
                 }
             }
             catch (System.Net.Sockets.SocketException)
