@@ -22,3 +22,6 @@ C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\pcs\bin\Debug\remotig
 C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\pcs\obj\Debug\pcs.csprojResolveAssemblyReference.cache
 C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\pcs\obj\Debug\pcs.exe
 C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\pcs\obj\Debug\pcs.pdb
+\\Mac\Home\Desktop\GitHub\FindSomethingElse\DADSTORM\pcs\bin\Debug\pcs.exe.config
+\\Mac\Home\Desktop\GitHub\FindSomethingElse\DADSTORM\pcs\obj\Debug\pcs.exe
+\\Mac\Home\Desktop\GitHub\FindSomethingElse\DADSTORM\pcs\obj\Debug\pcs.pdb
