@@ -205,9 +205,12 @@ public class opObject : MarshalByRefObject, IOperator
                         if (words[0] == "UNIQ")
                         {
                             outTuple = uniq.uniqTuple(in_queue[0], Int32.Parse(words[1]));
-                            out_queue.Add(outTuple);
-                            Console.WriteLine("Output from Operator:");
-                            Console.WriteLine(outTuple.getUser());
+                            if(outTuple.getUser() != "")
+                            {
+                                out_queue.Add(outTuple);
+                                Console.WriteLine("Output from Operator:");
+                                Console.WriteLine(outTuple.getUser());
+                            }
                             in_queue.Remove(in_queue[0]);
                         }
                         if (words[0] == "DUP")
@@ -231,14 +234,10 @@ public class opObject : MarshalByRefObject, IOperator
                         {
                             outTuple = count.countMethod(in_queue[0]);
                             out_queue.Add(outTuple);
-                            if(in_queue[0].getID() != 0)
-                            {
-                                Console.WriteLine("Output from Operator:");
-                                Console.WriteLine(outTuple.getID());
-                                Console.WriteLine(outTuple.getUser());
-                                Console.WriteLine(outTuple.getURL());
-                                Console.WriteLine("Tuples count until now: " + count.getCount());
-                            }
+                            
+                            Console.WriteLine("Output from Operator:");
+                            Console.WriteLine(outTuple.getUser());
+                            Console.WriteLine("Tuples count until now: " + count.getCount());
                             
                             in_queue.Remove(in_queue[0]);
                         }
@@ -266,6 +265,7 @@ public class opObject : MarshalByRefObject, IOperator
                }
            }
         }
+
         private static string routing(string urls, string routing)
         {
           
@@ -486,15 +486,7 @@ public class opObject : MarshalByRefObject, IOperator
 
             public remoting_interfaces.Tuple countMethod(remoting_interfaces.Tuple Tuple)
             {
-                if(Tuple.getID() != 0)
-                {
-                    count++;
-                    
-                }
-                else
-                {
-                    Tuple.setID(0);
-                }
+                count++;
                 return Tuple;
             }
 

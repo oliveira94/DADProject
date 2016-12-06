@@ -105,7 +105,6 @@ namespace puppet_master
                 IAsyncResult result = dele.BeginInvoke(op.rep_factor, op.address, op.operator_spec, op.operator_id, funcaoCallBack, null);
 
             }
-
         }
 
         static public void next_Operator() //envia informação a cada operador sobre o operador seguinte
@@ -223,7 +222,7 @@ namespace puppet_master
                     read_command(line);
                 }
             }
-            catch(FileNotFoundException)
+            catch (FileNotFoundException)
             {
                 Console.WriteLine("Commands file not found.");
             }
