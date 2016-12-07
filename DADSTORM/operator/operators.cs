@@ -238,6 +238,7 @@ public class opObject : MarshalByRefObject, IOperator
                             Console.WriteLine("Output from Operator:");
                             Console.WriteLine(outTuple.getUser());
                             Console.WriteLine("Tuples count until now: " + count.getCount());
+                            Console.WriteLine("      ");
                             
                             in_queue.Remove(in_queue[0]);
                         }
@@ -426,20 +427,6 @@ public class opObject : MarshalByRefObject, IOperator
 
             public remoting_interfaces.Tuple uniqTuple(remoting_interfaces.Tuple Tuple, int field_nember)
             {
-                if(field_nember == 1)
-                {
-                    if (!tuplos.Contains(Tuple.getID().ToString()))
-                    {
-                        tuplos.Add(Tuple.getID().ToString());
-                        output = Tuple;
-                    }
-                    else
-                    {
-                        output = new remoting_interfaces.Tuple(0, "", "");
-                    }
-                }
-                else if(field_nember == 2)
-                {
                     if (!tuplos.Contains(Tuple.getUser()))
                     {
                         tuplos.Add(Tuple.getUser());
@@ -449,20 +436,6 @@ public class opObject : MarshalByRefObject, IOperator
                     {
                         output = new remoting_interfaces.Tuple(0, "", "");
                     }
-                }
-                else if (field_nember == 3)
-                {
-                    if (!tuplos.Contains(Tuple.getURL()))
-                    {
-                        tuplos.Add(Tuple.getURL());
-                        output = Tuple;
-                    }
-                    else
-                    {
-                        output = new remoting_interfaces.Tuple(0, "", "");
-                    }
-                }
-
                 return output;
             }
         }
