@@ -35,7 +35,7 @@ namespace @operator
             TcpChannel channel = new TcpChannel(port);
             ChannelServices.RegisterChannel(channel, false);
             operatorObject = new opObject();
-            RemotingServices.Marshal(operatorObject, "op", typeof(opObject));
+            RemotingServices.Marshal(operatorObject, "op", typeof(opObject));          
             Console.ReadLine();
         }
     }
@@ -366,7 +366,8 @@ public class opObject : MarshalByRefObject, IOperator
             {
                 List<string> outputUsers = new List<string>();
                 string path = Directory.GetCurrentDirectory();
-                Assembly testDLL = Assembly.LoadFile(@"\\Mac\Home\Desktop\GitHub\FindSomethingElse\DADSTORM\" + dll);
+                path = path.Remove(path.Length - 13);
+                Assembly testDLL = Assembly.LoadFile(@path + dll);
 
                 foreach (var type in testDLL.GetExportedTypes())
                 {

@@ -39,7 +39,7 @@ namespace puppet_master
             print_var();
             create_replicas();
             next_Operator();
-            read_from_file();
+            //read_from_file();
      
             Console.WriteLine("Input (start OP{1-4}) command");
             while(true)
@@ -59,7 +59,7 @@ namespace puppet_master
             {
                 string[] words = line.Split(' ');
 
-                if (line.StartsWith("start")
+                if (line.StartsWith("Start")
                       || line.StartsWith("freeze")
                       || line.StartsWith("unfreeze")
                       || line.StartsWith("crash")
@@ -164,7 +164,7 @@ namespace puppet_master
             string[] words = command.Split(' ');
             try
             {
-                if (command.StartsWith("start")) // se o comando começar com "start"
+                if (command.StartsWith("Start")) // se o comando começar com "start"
                 {
                     foreach (Operator op in op_list) //percorremos todos os operadores na lista de operadores
                     {
@@ -178,7 +178,7 @@ namespace puppet_master
                             else // caso o operador encontrado não seja o primeiro
                             {
                                 string[] rep = op.address.Split(','); // dividimos os seus URls
-
+                            
                                 foreach (string url in rep) //para cada URl das replicas do operador encontrado
                                 {
                                     op_obj = (IOperator)Activator.GetObject(typeof(IOperator), url); // cria um objeto na replica
