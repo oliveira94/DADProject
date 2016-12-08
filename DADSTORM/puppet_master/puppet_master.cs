@@ -32,6 +32,7 @@ namespace puppet_master
 
         static List<Operator> op_list = new List<Operator>(); //lista de todos os operadores
         static List<IOperator> op_obj_list = new List<IOperator>();//lista de todos os objetos que existem nos operadores
+        static List<string> commands_from_file = new List<string>();
 
         static void Main(string[] args)
         {
@@ -42,7 +43,13 @@ namespace puppet_master
             //read_from_file();
      
             Console.WriteLine("Input (start OP{1-4}) command");
-            while(true)
+
+            foreach (string word in commands_from_file)
+            {
+                read_command(word);
+            }
+
+            while (true)
             {
                 string command = Console.ReadLine();
                 read_command(command);
@@ -66,7 +73,7 @@ namespace puppet_master
                       || line.StartsWith("interval")
                       || line.StartsWith("wait"))
                 {
-                    read_command(line);
+                    commands_from_file.Add(line);
                 }
                 else if (line.StartsWith("%"))
                 {
