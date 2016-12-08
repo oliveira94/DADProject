@@ -58,36 +58,53 @@ namespace puppet_master
             while ((line = file.ReadLine()) != null)
             {
                 string[] words = line.Split(' ');
-                foreach (string word in words)
+
+                if (line.StartsWith("start")
+                      || line.StartsWith("freeze")
+                      || line.StartsWith("unfreeze")
+                      || line.StartsWith("crash")
+                      || line.StartsWith("interval")
+                      || line.StartsWith("wait"))
                 {
-                    if (word == "Semantics")
-                    {
-                        semantics = words[1];
-                    }
-                    else if (word == "LoggingLevel")
-                    {
-                        loggin_level = words[1];
-                    }
-                    else if (word.StartsWith("OP") && word == words[0]) // se a palavra for começar por OP e for a primeira palavra da lista de palavras
-                    {
-                        Operator op = new Operator();
-                        op.operator_id = words[0];
-                        op.input_ops = words[3];
-                        op.rep_factor = Int32.Parse(words[6]);
-                        op.routing = words[8];
-                        op.address = words[10];
+                    read_command(line);
+                }
+                else if (line.StartsWith("%"))
+                {
 
-                        for (int i = 1; i < op.rep_factor; i++) //para o apanhar o numero de URLs especificado em rep_factor 
+                }
+                else
+                {
+                    foreach (string word in words)
+                    {
+                        if (word == "Semantics")
                         {
-                            op.address = op.address + words[10 + i];
+                            semantics = words[1];
                         }
+                        else if (word == "LoggingLevel")
+                        {
+                            loggin_level = words[1];
+                        }
+                        else if (word.StartsWith("OP") && word == words[0]) // se a palavra for começar por OP e for a primeira palavra da lista de palavras
+                        {
+                            Operator op = new Operator();
+                            op.operator_id = words[0];
+                            op.input_ops = words[3];
+                            op.rep_factor = Int32.Parse(words[6]);
+                            op.routing = words[8];
+                            op.address = words[10];
 
-                        op.operator_spec = words[10 + op.rep_factor + 2]; // guardamos o tipo de operador 
-                        if (!op.operator_spec.Equals("COUNT") && !op.operator_spec.Equals("DUP")) // Se o tipo for diferente de "count" significa que ainda falta concatenar os parametros
-                        {
-                            op.operator_spec = op.operator_spec + "," + words[(10 + op.rep_factor + 2) + 1]; //concatenamos o tipo de operador com os seus parametros
+                            for (int i = 1; i < op.rep_factor; i++) //para o apanhar o numero de URLs especificado em rep_factor 
+                            {
+                                op.address = op.address + words[10 + i];
+                            }
+
+                            op.operator_spec = words[10 + op.rep_factor + 2]; // guardamos o tipo de operador 
+                            if (!op.operator_spec.Equals("COUNT") && !op.operator_spec.Equals("DUP")) // Se o tipo for diferente de "count" significa que ainda falta concatenar os parametros
+                            {
+                                op.operator_spec = op.operator_spec + "," + words[(10 + op.rep_factor + 2) + 1]; //concatenamos o tipo de operador com os seus parametros
+                            }
+                            op_list.Add(op);
                         }
-                        op_list.Add(op);
                     }
                 }
             }
