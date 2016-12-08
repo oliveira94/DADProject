@@ -40,9 +40,8 @@ namespace puppet_master
             print_var();
             create_replicas();
             next_Operator();
-            //read_from_file();
      
-            Console.WriteLine("Input (start OP{1-4}) command");
+            Console.WriteLine("Input command");
 
             foreach (string word in commands_from_file)
             {

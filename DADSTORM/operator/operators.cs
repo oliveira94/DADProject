@@ -259,7 +259,7 @@ public class opObject : MarshalByRefObject, IOperator
                {
                    if (!next_url.Equals("null"))
                    {
-                       op_obj = (IOperator)Activator.GetObject(typeof(IOperator), routing(next_url, next_routing));
+                       op_obj = (IOperator)Activator.GetObject(typeof(IOperator), routing(next_url, next_routing, out_queue[0]));
                        op_obj.add_to_inQueue(out_queue[0]);
                        out_queue.Remove(out_queue[0]);
                    }
@@ -267,9 +267,9 @@ public class opObject : MarshalByRefObject, IOperator
            }
         }
 
-        private static string routing(string urls, string routing)
+        private static string routing(string urls, string routing, remoting_interfaces.Tuple tup)
         {
-          
+
             string[] words = urls.Split(',');       // contem todos os URls do  downstream operador 
             if (routing.Equals("primary"))
             {
@@ -283,9 +283,27 @@ public class opObject : MarshalByRefObject, IOperator
             }
             else
             {
-                return words[0];
+                hashing(Int32.Parse(routing), tup, words.Length);
             }
             return "error";
+        }
+
+        private static int hashing(int field, remoting_interfaces.Tuple tp, int replicas)
+        {
+            if (field == 1) // get the tuple id field
+            {
+                string str = tp.getID().ToString();
+                return Math.Abs(str.GetHashCode()) % replicas;
+            }
+            else if (field == 2) // get the tuple user field
+            {
+                return Math.Abs(tp.getUser().GetHashCode()) % replicas;
+            }
+            else if (field == 3) // get the tuple url field
+            {
+                return Math.Abs(tp.getURL().GetHashCode()) % replicas;
+            }
+            return 0;
         }
     
 
