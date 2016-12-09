@@ -12,14 +12,16 @@ namespace remoting_interfaces
     [Serializable]
     public class Tuple
     {
-        int id;
-        string user, URL;
+        int id, uniqueID;
+        string user, URL, timestamp;
 
-        public Tuple(int id, string user, string URL)
+        public Tuple(int id, string user, string URL, int uniqueID, string timestamp)
         {
             this.id = id;
             this.user = user;
             this.URL = URL;
+            this.uniqueID = uniqueID;
+            this.timestamp = timestamp;
         }
         public int getID()
         {
@@ -49,6 +51,26 @@ namespace remoting_interfaces
         public void setURL(string URL)
         {
             this.URL = URL;
+        }
+
+        public int getUniqueID()
+        {
+            return uniqueID;
+        }
+
+        public void setUniqueID(int uniqueID)
+        {
+            this.uniqueID = uniqueID;
+        }
+
+        public string getTimestamp()
+        {
+            return timestamp;
+        }
+
+        public void setTimestamp(string timestamp)
+        {
+            this.timestamp = timestamp;
         }
     }
 

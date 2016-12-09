@@ -22,8 +22,6 @@ namespace @operator
         List<String> tuplos = new List<String>();
         static opObject operatorObject;
 
-        
-
         public string pathDir = "";
 
         static void Main(string[] args)
@@ -163,7 +161,7 @@ public class opObject : MarshalByRefObject, IOperator
             while ((line = file.ReadLine()) != null)
             {
                 string[] words = line.Split(',');
-                remoting_interfaces.Tuple Tuple = new remoting_interfaces.Tuple(Int32.Parse(words[0]), words[1], words[2]);
+                remoting_interfaces.Tuple Tuple = new remoting_interfaces.Tuple(Int32.Parse(words[0]), words[1], words[2], 0, "");
                 in_queue.Add(Tuple);
             }
         }
@@ -175,13 +173,7 @@ public class opObject : MarshalByRefObject, IOperator
 
         public void process_inQueue()
         {
-            remoting_interfaces.Tuple Tuple1 = new remoting_interfaces.Tuple(1, "user2", "www.ulisboa.pt");
-            remoting_interfaces.Tuple Tuple2 = new remoting_interfaces.Tuple(1, "user3", "www.tecnico.ulisboa.pt");
-            remoting_interfaces.Tuple Tuple3 = new remoting_interfaces.Tuple(3, "user3", "www.tecnico.ulisboa.pt");
-
-            //in_queue.Add(Tuple1);
-            //in_queue.Add(Tuple2);
-            //in_queue.Add(Tuple3);
+            int countID = 1;
 
             FILTER filter = new FILTER();
             CUSTOM custom = new CUSTOM();
@@ -212,7 +204,8 @@ public class opObject : MarshalByRefObject, IOperator
 
                         if (words[0] == "FILTER")
                         {
-                            outTuple = filter.doTweeters(in_queue[0], Int32.Parse(words[1]), words[2], words[3]);
+                            countID++;
+                            outTuple = filter.doTweeters(in_queue[0], Int32.Parse(words[1]), words[2], words[3], countID);
                             out_queue.Add(outTuple);
                             in_queue.Remove(in_queue[0]);
                             Console.WriteLine("Output from Operator:");
@@ -225,10 +218,11 @@ public class opObject : MarshalByRefObject, IOperator
                             List<string> Followers = new List<string>();
 
                             Followers = custom.getoutput(words[1], words[3], in_queue[0]);
+                            countID++;
                             foreach (string follower in Followers)
                             {
                                 Console.WriteLine("follower: " + follower);
-                                remoting_interfaces.Tuple Tuple = new remoting_interfaces.Tuple(0, follower, "");
+                                remoting_interfaces.Tuple Tuple = new remoting_interfaces.Tuple(0, follower, "", countID, "");//see this
                                 out_queue.Add(Tuple);
                             }
 
@@ -236,6 +230,7 @@ public class opObject : MarshalByRefObject, IOperator
                         }
                         if (words[0] == "UNIQ")
                         {
+                            
                             outTuple = uniq.uniqTuple(in_queue[0], Int32.Parse(words[1]));
                             if(outTuple.getUser() != "")
                             {
@@ -358,11 +353,12 @@ public class opObject : MarshalByRefObject, IOperator
 
         class FILTER : operators
         {
-            public remoting_interfaces.Tuple doTweeters(remoting_interfaces.Tuple input_Tuple, int field_number, string condition, string value)
+            public remoting_interfaces.Tuple doTweeters(remoting_interfaces.Tuple input_Tuple, int field_number, string condition, string value, int countID)
             {
+                
                 List<string> tweeters = new List<string>();
 
-                remoting_interfaces.Tuple Tuple = new remoting_interfaces.Tuple(0, "", "");
+                remoting_interfaces.Tuple Tuple = new remoting_interfaces.Tuple(0, "", "", 0, "");
 
                 string[] tokens = { input_Tuple.getID().ToString(), input_Tuple.getUser(), input_Tuple.getURL() };
 
@@ -378,6 +374,7 @@ public class opObject : MarshalByRefObject, IOperator
                                         Tuple.setID(Int32.Parse(tokens[0]));
                                         Tuple.setUser(tokens[1]);
                                         Tuple.setURL(tokens[2]);
+                                        Tuple.setID(countID);
                                     }
                                     break;
                                 case ">":
@@ -386,6 +383,7 @@ public class opObject : MarshalByRefObject, IOperator
                                         Tuple.setID(Int32.Parse(tokens[0]));
                                         Tuple.setUser(tokens[1]);
                                         Tuple.setURL(tokens[2]);
+                                        Tuple.setID(countID);
                             }
                                     break;
                                 case "=":
@@ -394,6 +392,7 @@ public class opObject : MarshalByRefObject, IOperator
                                         Tuple.setID(Int32.Parse(tokens[0]));
                                         Tuple.setUser(tokens[1]);
                                         Tuple.setURL(tokens[2]);
+                                        Tuple.setID(countID);       
                             }
                                     break;
                                 default:
@@ -409,6 +408,7 @@ public class opObject : MarshalByRefObject, IOperator
                                 Tuple.setID(Int32.Parse(tokens[0]));
                                 Tuple.setUser(tokens[1]);
                                 Tuple.setURL(tokens[2]);
+                                Tuple.setID(countID);
                     }
                         }
                         //field_nember is the URLs
@@ -420,6 +420,7 @@ public class opObject : MarshalByRefObject, IOperator
                                 Tuple.setID(Int32.Parse(tokens[0]));
                                 Tuple.setUser(tokens[1]);
                                 Tuple.setURL(tokens[2]);
+                                Tuple.setID(countID);
                     }
                         }
                 return Tuple;
@@ -491,7 +492,7 @@ public class opObject : MarshalByRefObject, IOperator
         class UNIQ : operators
         {
             List<string> tuplos = new List<string>();
-            remoting_interfaces.Tuple output = new remoting_interfaces.Tuple(0, "", "");
+            remoting_interfaces.Tuple output = new remoting_interfaces.Tuple(0, "", "", 0, "");
 
             public remoting_interfaces.Tuple uniqTuple(remoting_interfaces.Tuple Tuple, int field_nember)
             {
@@ -502,7 +503,7 @@ public class opObject : MarshalByRefObject, IOperator
                     }
                     else
                     {
-                        output = new remoting_interfaces.Tuple(0, "", "");
+                        output = new remoting_interfaces.Tuple(0, "", "", 0, "");
                     }
                 return output;
             }
