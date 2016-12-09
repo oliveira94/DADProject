@@ -51,6 +51,7 @@ public class opObject : MarshalByRefObject, IOperator
         static string next_url = "null"; //url do proximo operador
         static string next_routing = "null"; //tipo de routing do operador downstream
         static public bool start = false;
+        static string operator_id;
         List<remoting_interfaces.Tuple> queue = new List<remoting_interfaces.Tuple>();
 
         List<remoting_interfaces.Tuple> in_queue = new List<remoting_interfaces.Tuple>();
@@ -71,12 +72,15 @@ public class opObject : MarshalByRefObject, IOperator
             Console.WriteLine("Next OP routing->" + next_routing);
         }
 
-        public void set_start(string op_spec_in, int firstTime)
+        public void set_start(string op_spec_in, int firstTime, string op_id)
         {
+            operator_id = op_id;
             start = true;
             op_spec = op_spec_in;
             Console.WriteLine("Triggered");
-            if(firstTime == 0)
+            puppet_obj.log(operator_id + " has started.");
+
+            if (firstTime == 0)
             {
                 //thread to convert each line of tweeters.dat in a remoting_interfaces.Tuple
                 Thread readData = new Thread(readFile);
@@ -92,6 +96,7 @@ public class opObject : MarshalByRefObject, IOperator
 
         public void set_freeze()
         {
+            puppet_obj.log("Command on" + operator_id + ": Freeze");
             Monitor.Enter(tLock);
             try
             {
@@ -105,16 +110,19 @@ public class opObject : MarshalByRefObject, IOperator
 
         public void set_unfreeze()
         {
+            puppet_obj.log("Command" + operator_id + ": Unfreeze");
             Monitor.Exit(tLock);
         }
 
         public void crash()
         {
+            puppet_obj.log("Command" + operator_id + ": Crash");
             Environment.Exit(0);
         }
 
         public void Wait(int time)
         {
+            puppet_obj.log("Command" + operator_id + ": Interval");
             Monitor.Enter(tLock);
             try
             {
@@ -263,7 +271,7 @@ public class opObject : MarshalByRefObject, IOperator
                    {
                         op_obj = (IOperator)Activator.GetObject(typeof(IOperator), routing(next_url, next_routing, out_queue[0]));
                         op_obj.add_to_inQueue(out_queue[0]);
-                        puppet_obj.log("Sent Tuple to OPx with the following info:");
+                        puppet_obj.log("Sent Tuple to " + operator_id + " with the following info:");
                         out_queue.Remove(out_queue[0]);
                    }
                }
