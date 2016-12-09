@@ -51,6 +51,8 @@ public class opObject : MarshalByRefObject, IOperator
         static public bool freeze = false;
         static string operator_id;
         static string log_lvl;
+        int countID = 0;
+        int increment = 0;
         List<remoting_interfaces.Tuple> queue = new List<remoting_interfaces.Tuple>();
 
         List<remoting_interfaces.Tuple> in_queue = new List<remoting_interfaces.Tuple>();
@@ -74,8 +76,9 @@ public class opObject : MarshalByRefObject, IOperator
             Console.WriteLine("Next OP routing->" + next_routing);
         }
 
-        public void set_start(string op_spec_in, int firstTime, string op_id, string logging_level)
+        public void set_start(string op_spec_in, int firstTime, string op_id, string logging_level, int URLCount)
         {
+            countID = URLCount;
             operator_id = op_id;
             log_lvl = logging_level;
             start = true;
@@ -173,8 +176,6 @@ public class opObject : MarshalByRefObject, IOperator
 
         public void process_inQueue()
         {
-            int countID = 1;
-
             FILTER filter = new FILTER();
             CUSTOM custom = new CUSTOM();
             UNIQ uniq = new UNIQ();
@@ -200,31 +201,39 @@ public class opObject : MarshalByRefObject, IOperator
                             Console.WriteLine("ID: " + in_queue[0].getID());
                             Console.WriteLine("User: " + in_queue[0].getUser());
                             Console.WriteLine("URL: " + in_queue[0].getURL());
-                            Console.WriteLine("UniqueID: " + in_queue[0].getUniqueID());
                         }
 
                         if (words[0] == "FILTER")
                         {
-                            countID++;
-                            outTuple = filter.doTweeters(in_queue[0], Int32.Parse(words[1]), words[2], words[3], countID);
-                            out_queue.Add(outTuple);
+                            increment++;
+                            int newNumber = int.Parse(countID.ToString() + increment.ToString());
+
+                            outTuple = filter.doTweeters(in_queue[0], Int32.Parse(words[1]), words[2], words[3], newNumber);
+                            
+                            if (outTuple.getUser() != "")
+                            {
+                                
+                                out_queue.Add(outTuple);
+                                
+                                Console.WriteLine("Output from Operator:");
+                                Console.WriteLine(outTuple.getID());
+                                Console.WriteLine(outTuple.getUser());
+                                Console.WriteLine(outTuple.getURL());
+                                Console.WriteLine(outTuple.getUniqueID());
+                            }
                             in_queue.Remove(in_queue[0]);
-                            Console.WriteLine("Output from Operator:");
-                            Console.WriteLine(outTuple.getID());
-                            Console.WriteLine(outTuple.getUser());
-                            Console.WriteLine(outTuple.getURL());
-                            Console.WriteLine(outTuple.getUniqueID());
                         }
                         if (words[0] == "CUSTOM")
                         {
                             List<string> Followers = new List<string>();
-
                             Followers = custom.getoutput(words[1], words[3], in_queue[0]);
-                            countID++;
+                            
                             foreach (string follower in Followers)
                             {
-                                
-                                remoting_interfaces.Tuple Tuple = new remoting_interfaces.Tuple(0, follower, "", countID, "");//see this
+                                increment++;
+                                int newNumber = int.Parse(countID.ToString() + increment.ToString());
+
+                                remoting_interfaces.Tuple Tuple = new remoting_interfaces.Tuple(0, follower, "", newNumber, "");
                                 Console.WriteLine("follower: " + follower + "    Unique ID: " + Tuple.getUniqueID());
                                 out_queue.Add(Tuple);
 
@@ -271,7 +280,7 @@ public class opObject : MarshalByRefObject, IOperator
                             Console.WriteLine("Output from Operator:");
                             Console.WriteLine(outTuple.getUser());
                             Console.WriteLine("Tuples count until now: " + count.getCount());
-                            Console.WriteLine("UniqueID:    " + outTuple.getUniqueID(););
+                            Console.WriteLine("UniqueID:    " + outTuple.getUniqueID());
                             Console.WriteLine("      ");
                             
                             in_queue.Remove(in_queue[0]);
@@ -365,7 +374,7 @@ public class opObject : MarshalByRefObject, IOperator
                 
                 List<string> tweeters = new List<string>();
 
-                remoting_interfaces.Tuple Tuple = new remoting_interfaces.Tuple(0, "", "", 0, "");
+                remoting_interfaces.Tuple Tuple = new remoting_interfaces.Tuple(0, "", "", countID, "");
 
                 string[] tokens = { input_Tuple.getID().ToString(), input_Tuple.getUser(), input_Tuple.getURL() };
 
@@ -381,7 +390,7 @@ public class opObject : MarshalByRefObject, IOperator
                                         Tuple.setID(Int32.Parse(tokens[0]));
                                         Tuple.setUser(tokens[1]);
                                         Tuple.setURL(tokens[2]);
-                                        Tuple.setID(countID);
+                                        Tuple.setUniqueID(countID);
                                     }
                                     break;
                                 case ">":
@@ -390,7 +399,7 @@ public class opObject : MarshalByRefObject, IOperator
                                         Tuple.setID(Int32.Parse(tokens[0]));
                                         Tuple.setUser(tokens[1]);
                                         Tuple.setURL(tokens[2]);
-                                        Tuple.setID(countID);
+                                        Tuple.setUniqueID(countID);
                             }
                                     break;
                                 case "=":
@@ -399,7 +408,7 @@ public class opObject : MarshalByRefObject, IOperator
                                         Tuple.setID(Int32.Parse(tokens[0]));
                                         Tuple.setUser(tokens[1]);
                                         Tuple.setURL(tokens[2]);
-                                        Tuple.setID(countID);       
+                                        Tuple.setUniqueID(countID);    
                             }
                                     break;
                                 default:
@@ -415,7 +424,7 @@ public class opObject : MarshalByRefObject, IOperator
                                 Tuple.setID(Int32.Parse(tokens[0]));
                                 Tuple.setUser(tokens[1]);
                                 Tuple.setURL(tokens[2]);
-                                Tuple.setID(countID);
+                                Tuple.setUniqueID(countID);
                     }
                         }
                         //field_nember is the URLs
@@ -427,7 +436,7 @@ public class opObject : MarshalByRefObject, IOperator
                                 Tuple.setID(Int32.Parse(tokens[0]));
                                 Tuple.setUser(tokens[1]);
                                 Tuple.setURL(tokens[2]);
-                                Tuple.setID(countID);
+                                Tuple.setUniqueID(countID);
                     }
                         }
                 return Tuple;

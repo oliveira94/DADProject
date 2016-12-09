@@ -86,7 +86,7 @@ namespace remoting_interfaces
     {
         void next_op(string url, string routing);
         void readFile();
-        void set_start(string op_spec, int first, string op_id, string logging_level);
+        void set_start(string op_spec, int first, string op_id, string logging_level, int URLCount);
         void add_to_inQueue(remoting_interfaces.Tuple tp);
         void set_freeze();
         void set_unfreeze();

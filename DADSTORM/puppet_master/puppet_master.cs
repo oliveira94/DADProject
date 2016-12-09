@@ -17,7 +17,7 @@ namespace puppet_master
         static string semantics;
         static string loggin_level = "light"; //nivel de logging for defeito
         public delegate void RemoteAsyncDelegate(int rep_factor, string replica_URL, string whatoperator, string op_id); //irá apontar para a função a ser chamada assincronamente
-        public delegate void RemoteAsyncDelegateSet_Start(string op_spec_in, int firstTime, string op_id, string logging_level);
+        public delegate void RemoteAsyncDelegateSet_Start(string op_spec_in, int firstTime, string op_id, string logging_level ,int URLCount);
         public delegate void RemoteAsyncDelegateNext_Op(string url, string route);
         public delegate void RemoteAsyncDelegateFreeze();
         public delegate void RemoteAsyncDelegateUnfreeze();
@@ -221,6 +221,9 @@ namespace puppet_master
         {
             List<string> output = new List<string>();
             string[] words = command.Split(' ');
+            int i = 1;
+            
+
             try
             {
                 if (command.StartsWith("Start")) // se o comando começar com "start"
@@ -234,7 +237,7 @@ namespace puppet_master
                                 funcaoCallBackSet_Start = new AsyncCallback(OnExitSet_Start);
                                 RemoteAsyncDelegateSet_Start dele = new RemoteAsyncDelegateSet_Start(dic[routing(op.address, op.routing)].set_start);// procuramos no dicionario a réplica certa para ativar
 
-                                IAsyncResult result = dele.BeginInvoke(op.operator_spec, 0, op.operator_id,loggin_level, funcaoCallBackSet_Start, null);                             
+                                IAsyncResult result = dele.BeginInvoke(op.operator_spec, 0, op.operator_id,loggin_level, 1 , funcaoCallBackSet_Start, null);                             
                             }
                             else // caso o operador encontrado não seja o primeiro
                             {
@@ -242,9 +245,10 @@ namespace puppet_master
                             
                                 foreach (string url in rep) //para cada URl das replicas do operador encontrado
                                 {
+                                    i++;
                                     funcaoCallBackSet_Start = new AsyncCallback(OnExitSet_Start);
                                     RemoteAsyncDelegateSet_Start dele = new RemoteAsyncDelegateSet_Start(dic[url].set_start);// ativamos a replica atual do operador
-                                    IAsyncResult result = dele.BeginInvoke(op.operator_spec, 1, op.operator_id,loggin_level, funcaoCallBackSet_Start, null);                              
+                                    IAsyncResult result = dele.BeginInvoke(op.operator_spec, 1, op.operator_id, loggin_level, i , funcaoCallBackSet_Start, null);                              
                                 }
                             }
                             break;
