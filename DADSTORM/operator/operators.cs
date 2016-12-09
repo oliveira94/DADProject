@@ -22,6 +22,8 @@ namespace @operator
         List<String> tuplos = new List<String>();
         static opObject operatorObject;
 
+        
+
         public string pathDir = "";
 
         static void Main(string[] args)
@@ -40,9 +42,6 @@ namespace @operator
         }
     }
 
-   
-    
-
 public class opObject : MarshalByRefObject, IOperator
     {
         IOperator op_obj;
@@ -57,6 +56,9 @@ public class opObject : MarshalByRefObject, IOperator
 
         List<remoting_interfaces.Tuple> in_queue = new List<remoting_interfaces.Tuple>();
         List<remoting_interfaces.Tuple> out_queue = new List<remoting_interfaces.Tuple>();
+
+        public delegate void RemoteAsyncDelegateAdd(remoting_interfaces.Tuple tp);
+        static AsyncCallback funcaoCallBackAdd;
 
         static string op_spec;
 
@@ -149,10 +151,12 @@ public class opObject : MarshalByRefObject, IOperator
                 in_queue.Add(Tuple);
             }
         }
+
         public void add_to_inQueue(remoting_interfaces.Tuple tp)
         {
             in_queue.Add(tp);
         }
+
         public void process_inQueue()
         {
             remoting_interfaces.Tuple Tuple1 = new remoting_interfaces.Tuple(1, "user2", "www.ulisboa.pt");
@@ -272,7 +276,11 @@ public class opObject : MarshalByRefObject, IOperator
                    if (!next_url.Equals("null"))
                    {
                         op_obj = (IOperator)Activator.GetObject(typeof(IOperator), routing(next_url, next_routing, out_queue[0]));
-                        op_obj.add_to_inQueue(out_queue[0]);
+
+                        funcaoCallBackAdd = new AsyncCallback(OnExitAdd);//aponta para a função de retorno da função assincrona
+                        RemoteAsyncDelegateAdd dele = new RemoteAsyncDelegateAdd(op_obj.add_to_inQueue);//aponta para a função a ser chamada assincronamente
+                        IAsyncResult result = dele.BeginInvoke(out_queue[0], funcaoCallBackAdd, null);
+
                         if (log_lvl.Equals("full"))
                         {
                             puppet_obj.log("Sent Tuple to " + operator_id);
@@ -281,6 +289,11 @@ public class opObject : MarshalByRefObject, IOperator
                    }
                }
            }
+        }
+
+        public static void OnExitAdd(IAsyncResult ar)
+        {
+
         }
 
         private static string routing(string urls, string routing, remoting_interfaces.Tuple tup)
