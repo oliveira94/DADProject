@@ -53,10 +53,10 @@ public class opObject : MarshalByRefObject, IOperator
         static string log_lvl;
         List<remoting_interfaces.Tuple> queue = new List<remoting_interfaces.Tuple>();
 
-        //queue that receive the tuples
+        //queue that receives the tuples
         List<remoting_interfaces.Tuple> in_queue = new List<remoting_interfaces.Tuple>();
 
-        //queue with thee tuples to send to the next operator
+        //queue with the tuples to send to the next operator
         List<remoting_interfaces.Tuple> out_queue = new List<remoting_interfaces.Tuple>();
 
         public delegate void RemoteAsyncDelegateAdd(remoting_interfaces.Tuple tp);
@@ -155,7 +155,7 @@ public class opObject : MarshalByRefObject, IOperator
             }
         }
 
-        //Converto each userInfo in a remoting_interfaces.Tuple
+        //Convert each userInfo in a remoting_interfaces.Tuple
         public void readFile()
         {
             string line;
@@ -169,11 +169,13 @@ public class opObject : MarshalByRefObject, IOperator
             }
         }
 
+        //Method that allows an Operator to add tuples from the outqueue to the inqueue.
         public void add_to_inQueue(remoting_interfaces.Tuple tp)
         {
             in_queue.Add(tp);
         }
 
+        //Method that takes the tuples from the inqueue and processes them.
         public void process_inQueue()
         {
             FILTER filter = new FILTER();
@@ -281,6 +283,7 @@ public class opObject : MarshalByRefObject, IOperator
             }
         }
 
+        //Method that takes the tuples from the outqueue and sends them to the next operator.
         public void process_outQueue()
         {
            while(true)
