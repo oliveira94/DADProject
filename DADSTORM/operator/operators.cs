@@ -46,6 +46,8 @@ namespace @operator
 public class opObject : MarshalByRefObject, IOperator
     {
         IOperator op_obj;
+        Ipuppet_master puppet_obj = (Ipuppet_master)Activator.GetObject(typeof(Ipuppet_master), "tcp://localhost:12321/puppet_master");
+
         static string next_url = "null"; //url do proximo operador
         static string next_routing = "null"; //tipo de routing do operador downstream
         static public bool start = false;

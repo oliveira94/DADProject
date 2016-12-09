@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using remoting_interfaces;
 using System.Text.RegularExpressions;
 using System.IO;
+using System.Runtime.Serialization.Formatters;
 
 namespace puppet_master
 {
@@ -36,13 +37,30 @@ namespace puppet_master
         static List<IOperator> op_obj_list = new List<IOperator>();//lista de todos os objetos que existem nos operadores
         static List<string> commands_from_file = new List<string>();
 
+        static private puppet_master_object pmo;
+
         static void Main(string[] args)
         {
             read_conf_file();
             print_var();
             create_replicas();
             next_Operator();
-     
+
+            IDictionary propBag = new Hashtable();
+            propBag["port"] = 12321;
+            propBag["typeFilterLevel"] = TypeFilterLevel.Full;
+            propBag["name"] = "puppet_channel";
+
+            BinaryServerFormatterSinkProvider serverProv = new BinaryServerFormatterSinkProvider();
+            serverProv.TypeFilterLevel = TypeFilterLevel.Full;
+
+            TcpChannel channel = new TcpChannel(propBag,null, serverProv);
+            ChannelServices.RegisterChannel(channel, false);
+
+            pmo = new puppet_master_object();
+
+            RemotingServices.Marshal(pmo, "puppet_master", typeof(puppet_master_object));
+
             Console.WriteLine("Input command");
 
             foreach (string word in commands_from_file)
@@ -274,5 +292,13 @@ namespace puppet_master
     public class puppet_master_object : MarshalByRefObject, Ipuppet_master
     {
 
+        public void log(string log_entry)
+        {
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\diogo\Documents\GitHub\FindSomethingElse\DADSTORM\log.txt", true))
+            {
+                file.WriteLine(log_entry);
+            }
+            Console.WriteLine(log_entry);
+        }
     }
 }

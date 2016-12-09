@@ -58,7 +58,7 @@ namespace remoting_interfaces
     }
     public interface Ipuppet_master
     {
-
+        void log(string log_entry);
     }
     public interface IOperator
     {
