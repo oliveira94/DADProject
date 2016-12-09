@@ -299,7 +299,7 @@ namespace puppet_master
             Monitor.Enter(logLock);
             try
             {
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\diogo\Documents\GitHub\FindSomethingElse\DADSTORM\log.txt", true))
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"..\..\..\log.txt", true))
                 {
                     file.WriteLine(log_entry);
                 }

@@ -261,9 +261,10 @@ public class opObject : MarshalByRefObject, IOperator
                {
                    if (!next_url.Equals("null"))
                    {
-                       op_obj = (IOperator)Activator.GetObject(typeof(IOperator), routing(next_url, next_routing, out_queue[0]));
-                       op_obj.add_to_inQueue(out_queue[0]);
-                       out_queue.Remove(out_queue[0]);
+                        op_obj = (IOperator)Activator.GetObject(typeof(IOperator), routing(next_url, next_routing, out_queue[0]));
+                        op_obj.add_to_inQueue(out_queue[0]);
+                        puppet_obj.log("Sent Tuple to OPx with the following info:");
+                        out_queue.Remove(out_queue[0]);
                    }
                }
            }
