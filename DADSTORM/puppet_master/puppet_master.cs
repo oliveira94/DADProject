@@ -47,7 +47,7 @@ namespace puppet_master
             next_Operator();
 
             IDictionary propBag = new Hashtable();
-            propBag["port"] = 12321;
+            propBag["port"] = 10001;
             propBag["typeFilterLevel"] = TypeFilterLevel.Full;
             propBag["name"] = "puppet_channel";
 
