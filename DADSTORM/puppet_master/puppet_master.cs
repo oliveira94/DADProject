@@ -19,9 +19,21 @@ namespace puppet_master
         public delegate void RemoteAsyncDelegate(int rep_factor, string replica_URL, string whatoperator, string op_id); //irá apontar para a função a ser chamada assincronamente
         public delegate void RemoteAsyncDelegateSet_Start(string op_spec_in, int firstTime, string op_id, string logging_level);
         public delegate void RemoteAsyncDelegateNext_Op(string url, string route);
+        public delegate void RemoteAsyncDelegateFreeze();
+        public delegate void RemoteAsyncDelegateUnfreeze();
+        public delegate void RemoteAsyncDelegateCrash();
+        public delegate void RemoteAsyncDelegateInterval(int time);
+        public delegate void RemoteAsyncDelegateStatus();
+
         static AsyncCallback funcaoCallBack; //irá chamar uma função quando a função assincrona terminar
         static AsyncCallback funcaoCallBackSet_Start;
         static AsyncCallback funcaoCallBackNext_Op;
+        static AsyncCallback funcaoCallBackFreeze;
+        static AsyncCallback funcaoCallBackUnfreeze;
+        static AsyncCallback funcaoCallBackCrash;
+        static AsyncCallback funcaoCallBackInterval;
+        static AsyncCallback funcaoCallBackStatus;
+
         static Ipcs pcs_obj;
         static IOperator op_obj;
   
@@ -154,7 +166,6 @@ namespace puppet_master
             }
         }
 
-
         static public void create_replicas()
         {
             pcs_obj = (Ipcs)Activator.GetObject(typeof(Ipcs), "tcp://localhost:10000/pcs");
@@ -186,6 +197,7 @@ namespace puppet_master
             }
 
         }
+
         private static string routing(string urls, string routing)
         {
             string[] words = urls.Split(',');       // contem todos os URls do  downstream operador 
@@ -222,8 +234,7 @@ namespace puppet_master
                             {
                                 funcaoCallBackSet_Start = new AsyncCallback(OnExitSet_Start);//aponta para a função de retorno da função assincrona
                                 RemoteAsyncDelegateSet_Start dele = new RemoteAsyncDelegateSet_Start(dic[routing(op.address, op.routing)].set_start);//aponta para a função a ser chamada assincronamente
-                                IAsyncResult result = dele.BeginInvoke(op.operator_spec, 0, op.operator_id,loggin_level, funcaoCallBackSet_Start, null);
-                                //op_obj.set_start(op.operator_spec, 0); //faz start na replica resultada do routing                              
+                                IAsyncResult result = dele.BeginInvoke(op.operator_spec, 0, op.operator_id,loggin_level, funcaoCallBackSet_Start, null);                             
                             }
                             else // caso o operador encontrado não seja o primeiro
                             {
@@ -231,11 +242,9 @@ namespace puppet_master
                             
                                 foreach (string url in rep) //para cada URl das replicas do operador encontrado
                                 {
-                                    
                                     funcaoCallBackSet_Start = new AsyncCallback(OnExitSet_Start);//aponta para a função de retorno da função assincrona
                                     RemoteAsyncDelegateSet_Start dele = new RemoteAsyncDelegateSet_Start(dic[url].set_start);//aponta para a função a ser chamada assincronamente
-                                    IAsyncResult result = dele.BeginInvoke(op.operator_spec, 1, op.operator_id,loggin_level, funcaoCallBackSet_Start, null);
-                                    //op_obj.set_start(op.operator_spec, 1); // fazemos start na replica                                   
+                                    IAsyncResult result = dele.BeginInvoke(op.operator_spec, 1, op.operator_id,loggin_level, funcaoCallBackSet_Start, null);                              
                                 }
                             }
                             break;
@@ -251,7 +260,10 @@ namespace puppet_master
                         {
                             string[] rep = op.address.Split(','); // dividimos os seus URls
                             string url = rep[Int32.Parse(words[2])];
-                            dic[url].set_freeze();
+
+                            funcaoCallBackFreeze = new AsyncCallback(OnExitFreeze);//aponta para a função de retorno da função assincrona
+                            RemoteAsyncDelegateFreeze dele = new RemoteAsyncDelegateFreeze(dic[url].set_freeze);//aponta para a função a ser chamada assincronamente
+                            IAsyncResult result = dele.BeginInvoke(funcaoCallBackFreeze, null);
                         }
                     }
                 }
@@ -263,7 +275,10 @@ namespace puppet_master
                         {
                             string[] rep = op.address.Split(','); // dividimos os seus URls
                             string url = rep[Int32.Parse(words[2])];
-                            dic[url].set_unfreeze();
+
+                            funcaoCallBackUnfreeze = new AsyncCallback(OnExitUnfreeze);//aponta para a função de retorno da função assincrona
+                            RemoteAsyncDelegateUnfreeze dele = new RemoteAsyncDelegateUnfreeze(dic[url].set_unfreeze);//aponta para a função a ser chamada assincronamente
+                            IAsyncResult result = dele.BeginInvoke(funcaoCallBackUnfreeze, null);
                         }
                     }
                 }
@@ -275,7 +290,10 @@ namespace puppet_master
                         {
                             string[] rep = op.address.Split(','); // dividimos os seus URls
                             string url = rep[Int32.Parse(words[2])];
-                            dic[url].crash();
+
+                            funcaoCallBackCrash = new AsyncCallback(OnExitCrash);//aponta para a função de retorno da função assincrona
+                            RemoteAsyncDelegateCrash dele = new RemoteAsyncDelegateCrash(dic[url].crash);//aponta para a função a ser chamada assincronamente
+                            IAsyncResult result = dele.BeginInvoke(funcaoCallBackCrash, null);
                         }
                     }
                 }
@@ -292,7 +310,9 @@ namespace puppet_master
                             string[] rep = op.address.Split(','); // dividimos os seus URls
                             foreach (string url in rep)
                             {
-                                dic[url].Interval(Int32.Parse(words[2]));
+                                funcaoCallBackInterval = new AsyncCallback(OnExitInterval);//aponta para a função de retorno da função assincrona
+                                RemoteAsyncDelegateInterval dele = new RemoteAsyncDelegateInterval(dic[url].Interval);//aponta para a função a ser chamada assincronamente
+                                IAsyncResult result = dele.BeginInvoke(Int32.Parse(words[2]), funcaoCallBackInterval, null);
                             }
                         }
                     }
@@ -306,7 +326,9 @@ namespace puppet_master
                             string[] rep = op.address.Split(','); // dividimos os seus URls
                             foreach (string url in rep)
                             {
-                                dic[url].Status();
+                                funcaoCallBackStatus = new AsyncCallback(OnExitStatus);//aponta para a função de retorno da função assincrona
+                                RemoteAsyncDelegateStatus dele = new RemoteAsyncDelegateStatus(dic[url].Status);//aponta para a função a ser chamada assincronamente
+                                IAsyncResult result = dele.BeginInvoke(funcaoCallBackStatus, null);
                             }
                         }
                     }
@@ -327,20 +349,21 @@ namespace puppet_master
             }
         }
 
-        public static void OnExit(IAsyncResult ar)
-        {
-             
-        }
+        public static void OnExit(IAsyncResult ar) { }
 
-        public static void OnExitSet_Start(IAsyncResult ar)
-        {
+        public static void OnExitSet_Start(IAsyncResult ar) { }
 
-        }
+        public static void OnExitNext_Op(IAsyncResult ar) { }
 
-        public static void OnExitNext_Op(IAsyncResult ar)
-        {
+        public static void OnExitFreeze(IAsyncResult ar) { }
 
-        }
+        public static void OnExitUnfreeze(IAsyncResult ar) { }
+
+        public static void OnExitCrash(IAsyncResult ar) { }
+
+        public static void OnExitInterval(IAsyncResult ar) { }
+
+        public static void OnExitStatus(IAsyncResult ar) { }
 
         public static void read_from_file()
         {
