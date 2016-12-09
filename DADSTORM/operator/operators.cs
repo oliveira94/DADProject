@@ -186,8 +186,7 @@ public class opObject : MarshalByRefObject, IOperator
 
             while (true)
             {
-                Thread.Sleep(2000);
-
+              
                 Monitor.Enter(tLock);
                 try
                 {

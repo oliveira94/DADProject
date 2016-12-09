@@ -38,7 +38,7 @@ namespace pcs
 
     public class pcs_object : MarshalByRefObject, Ipcs
     {
-        public void create_replica(int rep_factor, string replica_URL, string whatoperator, string op_id)
+        public void create_replica(int rep_factor, string replica_URL, string whatoperator, string op_id) 
         {
             string path = @"..\..\..\operator\bin\debug\@operator.exe";
 

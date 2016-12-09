@@ -172,9 +172,9 @@ namespace puppet_master
             funcaoCallBack = new AsyncCallback(OnExit);//aponta para a função de retorno da função assincrona
             RemoteAsyncDelegate dele = new RemoteAsyncDelegate(pcs_obj.create_replica);//aponta para a função a ser chamada assincronamente
 
-            foreach (Operator op in op_list)
+            foreach (Operator op in op_list) 
             {
-                IAsyncResult result = dele.BeginInvoke(op.rep_factor, op.address, op.operator_spec, op.operator_id, funcaoCallBack, null);
+                IAsyncResult result = dele.BeginInvoke(op.rep_factor, op.address, op.operator_spec, op.operator_id, funcaoCallBack, null); 
 
             }
         }
