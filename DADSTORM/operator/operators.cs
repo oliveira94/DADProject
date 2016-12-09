@@ -52,6 +52,7 @@ public class opObject : MarshalByRefObject, IOperator
         static string next_routing = "null"; //tipo de routing do operador downstream
         static public bool start = false;
         static string operator_id;
+        static string log_lvl;
         List<remoting_interfaces.Tuple> queue = new List<remoting_interfaces.Tuple>();
 
         List<remoting_interfaces.Tuple> in_queue = new List<remoting_interfaces.Tuple>();
@@ -72,9 +73,10 @@ public class opObject : MarshalByRefObject, IOperator
             Console.WriteLine("Next OP routing->" + next_routing);
         }
 
-        public void set_start(string op_spec_in, int firstTime, string op_id)
+        public void set_start(string op_spec_in, int firstTime, string op_id, string logging_level)
         {
             operator_id = op_id;
+            log_lvl = logging_level;
             start = true;
             op_spec = op_spec_in;
             Console.WriteLine("Triggered");
@@ -271,7 +273,10 @@ public class opObject : MarshalByRefObject, IOperator
                    {
                         op_obj = (IOperator)Activator.GetObject(typeof(IOperator), routing(next_url, next_routing, out_queue[0]));
                         op_obj.add_to_inQueue(out_queue[0]);
-                        puppet_obj.log("Sent Tuple to " + operator_id + " with the following info:");
+                        if (log_lvl.Equals("full"))
+                        {
+                            puppet_obj.log("Sent Tuple to " + operator_id);
+                        }
                         out_queue.Remove(out_queue[0]);
                    }
                }

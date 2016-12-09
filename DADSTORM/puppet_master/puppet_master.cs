@@ -17,7 +17,7 @@ namespace puppet_master
         static string semantics;
         static string loggin_level = "light"; //nivel de logging for defeito
         public delegate void RemoteAsyncDelegate(int rep_factor, string replica_URL, string whatoperator, string op_id); //irá apontar para a função a ser chamada assincronamente
-        public delegate void RemoteAsyncDelegateSet_Start(string op_spec_in, int firstTime);
+        public delegate void RemoteAsyncDelegateSet_Start(string op_spec_in, int firstTime, string op_id, string logging_level);
         static AsyncCallback funcaoCallBack; //irá chamar uma função quando a função assincrona terminar
         static AsyncCallback funcaoCallBackSet_Start;
         static Ipcs pcs_obj;
@@ -45,6 +45,11 @@ namespace puppet_master
             print_var();
             create_replicas();
             next_Operator();
+
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"..\..\..\log.txt", true))
+            {
+                file.WriteLine("||-----------------Log date:" + DateTime.Now + "-----------------||");
+            }
 
             IDictionary propBag = new Hashtable();
             propBag["port"] = 10001;
@@ -212,7 +217,7 @@ namespace puppet_master
                             {
                                 funcaoCallBackSet_Start = new AsyncCallback(OnExitSet_Start);//aponta para a função de retorno da função assincrona
                                 RemoteAsyncDelegateSet_Start dele = new RemoteAsyncDelegateSet_Start(dic[routing(op.address, op.routing)].set_start);//aponta para a função a ser chamada assincronamente
-                                IAsyncResult result = dele.BeginInvoke(op.operator_spec, 0, funcaoCallBackSet_Start, null);
+                                IAsyncResult result = dele.BeginInvoke(op.operator_spec, 0, op.operator_id,loggin_level, funcaoCallBackSet_Start, null);
                                 //op_obj.set_start(op.operator_spec, 0); //faz start na replica resultada do routing                              
                             }
                             else // caso o operador encontrado não seja o primeiro
@@ -224,7 +229,7 @@ namespace puppet_master
                                     
                                     funcaoCallBackSet_Start = new AsyncCallback(OnExitSet_Start);//aponta para a função de retorno da função assincrona
                                     RemoteAsyncDelegateSet_Start dele = new RemoteAsyncDelegateSet_Start(dic[url].set_start);//aponta para a função a ser chamada assincronamente
-                                    IAsyncResult result = dele.BeginInvoke(op.operator_spec, 1, funcaoCallBackSet_Start, null);
+                                    IAsyncResult result = dele.BeginInvoke(op.operator_spec, 1, op.operator_id,loggin_level, funcaoCallBackSet_Start, null);
                                     //op_obj.set_start(op.operator_spec, 1); // fazemos start na replica                                   
                                 }
                             }
@@ -317,7 +322,6 @@ namespace puppet_master
             {
                 Monitor.Exit(logLock);
             }
-            Console.WriteLine(log_entry);
         }
     }
 }

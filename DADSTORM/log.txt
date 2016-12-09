@@ -103,3 +103,41 @@ Sent Tuple to OPx with the following info:
 Sent Tuple to OPx with the following info:
 Sent Tuple to OPx with the following info:
 Sent Tuple to OPx with the following info:
+||-----------------Log date:09/12/2016 12:21:55-----------------||
+OP3 has started.
+OP2 has started.
+OP2 has started.
+OP3 has started.
+OP1 has started.
+OP4 has started.
+OP4 has started.
+Sent Tuple to OP1 with the following info:
+Sent Tuple to OP2 with the following info:
+Sent Tuple to OP1 with the following info:
+Sent Tuple to OP1 with the following info:
+Sent Tuple to OP2 with the following info:
+Sent Tuple to OP2 with the following info:
+Sent Tuple to OP3 with the following info:
+Sent Tuple to OP1 with the following info:
+Sent Tuple to OP3 with the following info:
+Sent Tuple to OP3 with the following info:
+Sent Tuple to OP1 with the following info:
+Sent Tuple to OP1 with the following info:
+||-----------------Log date:09/12/2016 12:24:15-----------------||
+OP3 has started.
+OP3 has started.
+OP1 has started.
+OP2 has started.
+OP2 has started.
+OP4 has started.
+OP4 has started.
+Sent Tuple to OP1 with the following info:
+Sent Tuple to OP1 with the following info:
+Sent Tuple to OP2 with the following info:
+Sent Tuple to OP1 with the following info:
+Sent Tuple to OP2 with the following info:
+Sent Tuple to OP2 with the following info:
+Sent Tuple to OP3 with the following info:
+Sent Tuple to OP1 with the following info:
+Sent Tuple to OP3 with the following info:
+Sent Tuple to OP3 with the following info:
