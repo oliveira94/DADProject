@@ -56,7 +56,6 @@ namespace puppet_master
         static void Main(string[] args)
         {
             read_conf_file();
-            print_var();
             create_replicas();
             next_Operator();
 
@@ -340,15 +339,6 @@ namespace puppet_master
             }
         }
 
-        static public void print_var() // testar se as variáveis foram guardadas de acordo com o ficheiro de configuração
-        {
-            Console.WriteLine("ALL vars: \r\n");
-            foreach (Operator op in op_list)
-            {
-                Console.WriteLine("-operator_id " + op.operator_id + " -input:" + op.input_ops + " -rep_fact:" + op.rep_factor + " -routing:" + op.routing + " -address:" + op.address + " -operator:" + op.operator_spec + "\r\n");
-            }
-        }
-
         public static void OnExit(IAsyncResult ar) { }
 
         public static void OnExitSet_Start(IAsyncResult ar) { }
@@ -364,25 +354,6 @@ namespace puppet_master
         public static void OnExitInterval(IAsyncResult ar) { }
 
         public static void OnExitStatus(IAsyncResult ar) { }
-
-        public static void read_from_file()
-        {
-            string line;
-
-            try
-            {
-                System.IO.StreamReader file = new System.IO.StreamReader(@"..\..\..\sefet.txt");
-
-                while ((line = file.ReadLine()) != null)
-                {
-                    read_command(line);
-                }
-            }
-            catch (FileNotFoundException)
-            {
-                Console.WriteLine("Commands file not found.");
-            }
-        }
     }
 
     public class puppet_master_object : MarshalByRefObject, Ipuppet_master

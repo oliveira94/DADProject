@@ -22,8 +22,6 @@ namespace @operator
         List<String> tuplos = new List<String>();
         static opObject operatorObject;
 
-        
-
         public string pathDir = "";
 
         static void Main(string[] args)
@@ -55,7 +53,10 @@ public class opObject : MarshalByRefObject, IOperator
         static string log_lvl;
         List<remoting_interfaces.Tuple> queue = new List<remoting_interfaces.Tuple>();
 
+        //queue that receive the tuples
         List<remoting_interfaces.Tuple> in_queue = new List<remoting_interfaces.Tuple>();
+
+        //queue with thee tuples to send to the next operator
         List<remoting_interfaces.Tuple> out_queue = new List<remoting_interfaces.Tuple>();
 
         public delegate void RemoteAsyncDelegateAdd(remoting_interfaces.Tuple tp);
@@ -67,9 +68,9 @@ public class opObject : MarshalByRefObject, IOperator
 
         IOperator obj; //objecto remoto no proximo operador
 
+        //info about next operator
         public void next_op(string url, string route)
         {
-
             next_url = url;
             next_routing = route;
             Console.WriteLine("Next URL_list->" + next_url);
@@ -175,14 +176,6 @@ public class opObject : MarshalByRefObject, IOperator
 
         public void process_inQueue()
         {
-            remoting_interfaces.Tuple Tuple1 = new remoting_interfaces.Tuple(1, "user2", "www.ulisboa.pt");
-            remoting_interfaces.Tuple Tuple2 = new remoting_interfaces.Tuple(1, "user3", "www.tecnico.ulisboa.pt");
-            remoting_interfaces.Tuple Tuple3 = new remoting_interfaces.Tuple(3, "user3", "www.tecnico.ulisboa.pt");
-
-            //in_queue.Add(Tuple1);
-            //in_queue.Add(Tuple2);
-            //in_queue.Add(Tuple3);
-
             FILTER filter = new FILTER();
             CUSTOM custom = new CUSTOM();
             UNIQ uniq = new UNIQ();
@@ -212,6 +205,7 @@ public class opObject : MarshalByRefObject, IOperator
 
                         if (words[0] == "FILTER")
                         {
+                            //get the tuple after computation of Filter
                             outTuple = filter.doTweeters(in_queue[0], Int32.Parse(words[1]), words[2], words[3]);
                             out_queue.Add(outTuple);
                             in_queue.Remove(in_queue[0]);
@@ -224,6 +218,7 @@ public class opObject : MarshalByRefObject, IOperator
                         {
                             List<string> Followers = new List<string>();
 
+                            //get the list of followers
                             Followers = custom.getoutput(words[1], words[3], in_queue[0]);
                             foreach (string follower in Followers)
                             {
@@ -236,7 +231,9 @@ public class opObject : MarshalByRefObject, IOperator
                         }
                         if (words[0] == "UNIQ")
                         {
+                            
                             outTuple = uniq.uniqTuple(in_queue[0], Int32.Parse(words[1]));
+                            //only put the tuple in the out_queue if don't exists another equal to that tuple
                             if(outTuple.getUser() != "")
                             {
                                 out_queue.Add(outTuple);
@@ -247,6 +244,7 @@ public class opObject : MarshalByRefObject, IOperator
                         }
                         if (words[0] == "DUP")
                         {
+
                             List<remoting_interfaces.Tuple> duplicatedTuple = dup.duplicate(in_queue[0]);
 
                             foreach (remoting_interfaces.Tuple tuplo in duplicatedTuple)
@@ -438,6 +436,7 @@ public class opObject : MarshalByRefObject, IOperator
 
                 foreach (var type in testDLL.GetExportedTypes())
                 {
+                    //Get methods from class
                     MethodInfo[] members = type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.InvokeMethod);
 
                     foreach (MemberInfo member in members)
@@ -451,6 +450,7 @@ public class opObject : MarshalByRefObject, IOperator
                                 IList<IList<string>> result;
                                 ParameterInfo[] parameters = methodInfo.GetParameters();
                                
+                                
                                 object classInstance = Activator.CreateInstance(type, null);
 
                                 if (parameters.Length == 0)
@@ -463,20 +463,22 @@ public class opObject : MarshalByRefObject, IOperator
 
                                     List<string> inputLista = new List<string>();
                                     inputLista.Add(Tuple.getID().ToString());
+
                                     string str = Tuple.getUser();
                                     str = str.Replace(" ", String.Empty);
+
                                     inputLista.Add(str);
                                     arr4[0] = inputLista;
 
                                     result = (IList<IList<string>>)methodInfo.Invoke(classInstance, arr4);
                                     
+                                    //transform the list of list returned by the method, and convert to a list of strings
                                     foreach (List<string> outputlist in result)
                                     {
                                         foreach (string output in outputlist)
                                         {
                                             outputUsers.Add(output);
                                         }
-
                                     }
                                 }
                             }
@@ -495,6 +497,7 @@ public class opObject : MarshalByRefObject, IOperator
 
             public remoting_interfaces.Tuple uniqTuple(remoting_interfaces.Tuple Tuple, int field_nember)
             {
+                //see if the tuple already passed in this operador or not
                     if (!tuplos.Contains(Tuple.getUser()))
                     {
                         tuplos.Add(Tuple.getUser());
