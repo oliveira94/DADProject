@@ -12,16 +12,14 @@ namespace remoting_interfaces
     [Serializable]
     public class Tuple
     {
-        int id, uniqueID;
-        string user, URL, timestamp;
+        int id;
+        string user, URL;
 
-        public Tuple(int id, string user, string URL, int uniqueID, string timestamp)
+        public Tuple(int id, string user, string URL)
         {
             this.id = id;
             this.user = user;
             this.URL = URL;
-            this.uniqueID = uniqueID;
-            this.timestamp = timestamp;
         }
         public int getID()
         {
@@ -52,26 +50,6 @@ namespace remoting_interfaces
         {
             this.URL = URL;
         }
-
-        public int getUniqueID()
-        {
-            return uniqueID;
-        }
-
-        public void setUniqueID(int uniqueID)
-        {
-            this.uniqueID = uniqueID;
-        }
-
-        public string getTimestamp()
-        {
-            return timestamp;
-        }
-
-        public void setTimestamp(string timestamp)
-        {
-            this.timestamp = timestamp;
-        }
     }
 
     public interface Ipcs
@@ -86,7 +64,7 @@ namespace remoting_interfaces
     {
         void next_op(string url, string routing);
         void readFile();
-        void set_start(string op_spec, int first, string op_id, string logging_level, int URLCount);
+        void set_start(string op_spec, int first, string op_id, string logging_level);
         void add_to_inQueue(remoting_interfaces.Tuple tp);
         void set_freeze();
         void set_unfreeze();

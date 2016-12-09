@@ -22,6 +22,8 @@ namespace @operator
         List<String> tuplos = new List<String>();
         static opObject operatorObject;
 
+        
+
         public string pathDir = "";
 
         static void Main(string[] args)
@@ -51,8 +53,6 @@ public class opObject : MarshalByRefObject, IOperator
         static public bool freeze = false;
         static string operator_id;
         static string log_lvl;
-        int countID = 0;
-        int increment = 0;
         List<remoting_interfaces.Tuple> queue = new List<remoting_interfaces.Tuple>();
 
         List<remoting_interfaces.Tuple> in_queue = new List<remoting_interfaces.Tuple>();
@@ -76,9 +76,8 @@ public class opObject : MarshalByRefObject, IOperator
             Console.WriteLine("Next OP routing->" + next_routing);
         }
 
-        public void set_start(string op_spec_in, int firstTime, string op_id, string logging_level, int URLCount)
+        public void set_start(string op_spec_in, int firstTime, string op_id, string logging_level)
         {
-            countID = URLCount;
             operator_id = op_id;
             log_lvl = logging_level;
             start = true;
@@ -164,7 +163,7 @@ public class opObject : MarshalByRefObject, IOperator
             while ((line = file.ReadLine()) != null)
             {
                 string[] words = line.Split(',');
-                remoting_interfaces.Tuple Tuple = new remoting_interfaces.Tuple(Int32.Parse(words[0]), words[1], words[2], 0, "");
+                remoting_interfaces.Tuple Tuple = new remoting_interfaces.Tuple(Int32.Parse(words[0]), words[1], words[2]);
                 in_queue.Add(Tuple);
             }
         }
@@ -176,6 +175,14 @@ public class opObject : MarshalByRefObject, IOperator
 
         public void process_inQueue()
         {
+            remoting_interfaces.Tuple Tuple1 = new remoting_interfaces.Tuple(1, "user2", "www.ulisboa.pt");
+            remoting_interfaces.Tuple Tuple2 = new remoting_interfaces.Tuple(1, "user3", "www.tecnico.ulisboa.pt");
+            remoting_interfaces.Tuple Tuple3 = new remoting_interfaces.Tuple(3, "user3", "www.tecnico.ulisboa.pt");
+
+            //in_queue.Add(Tuple1);
+            //in_queue.Add(Tuple2);
+            //in_queue.Add(Tuple3);
+
             FILTER filter = new FILTER();
             CUSTOM custom = new CUSTOM();
             UNIQ uniq = new UNIQ();
@@ -205,52 +212,36 @@ public class opObject : MarshalByRefObject, IOperator
 
                         if (words[0] == "FILTER")
                         {
-                            increment++;
-                            int newNumber = int.Parse(countID.ToString() + increment.ToString());
-
-                            outTuple = filter.doTweeters(in_queue[0], Int32.Parse(words[1]), words[2], words[3], newNumber);
-                            
-                            if (outTuple.getUser() != "")
-                            {
-                                
-                                out_queue.Add(outTuple);
-                                
-                                Console.WriteLine("Output from Operator:");
-                                Console.WriteLine(outTuple.getID());
-                                Console.WriteLine(outTuple.getUser());
-                                Console.WriteLine(outTuple.getURL());
-                                Console.WriteLine(outTuple.getUniqueID());
-                            }
+                            outTuple = filter.doTweeters(in_queue[0], Int32.Parse(words[1]), words[2], words[3]);
+                            out_queue.Add(outTuple);
                             in_queue.Remove(in_queue[0]);
+                            Console.WriteLine("Output from Operator:");
+                            Console.WriteLine(outTuple.getID());
+                            Console.WriteLine(outTuple.getUser());
+                            Console.WriteLine(outTuple.getURL());
                         }
                         if (words[0] == "CUSTOM")
                         {
                             List<string> Followers = new List<string>();
+
                             Followers = custom.getoutput(words[1], words[3], in_queue[0]);
-                            
                             foreach (string follower in Followers)
                             {
-                                increment++;
-                                int newNumber = int.Parse(countID.ToString() + increment.ToString());
-
-                                remoting_interfaces.Tuple Tuple = new remoting_interfaces.Tuple(0, follower, "", newNumber, "");
-                                Console.WriteLine("follower: " + follower + "    Unique ID: " + Tuple.getUniqueID());
+                                Console.WriteLine("follower: " + follower);
+                                remoting_interfaces.Tuple Tuple = new remoting_interfaces.Tuple(0, follower, "");
                                 out_queue.Add(Tuple);
-
                             }
 
                             in_queue.Remove(in_queue[0]);
                         }
                         if (words[0] == "UNIQ")
                         {
-                            
                             outTuple = uniq.uniqTuple(in_queue[0], Int32.Parse(words[1]));
                             if(outTuple.getUser() != "")
                             {
                                 out_queue.Add(outTuple);
                                 Console.WriteLine("Output from Operator:");
                                 Console.WriteLine(outTuple.getUser());
-                                Console.WriteLine(outTuple.getUniqueID());
                             }
                             in_queue.Remove(in_queue[0]);
                         }
@@ -265,7 +256,6 @@ public class opObject : MarshalByRefObject, IOperator
                                 Console.WriteLine(tuplo.getID());
                                 Console.WriteLine(tuplo.getUser());
                                 Console.WriteLine(tuplo.getURL());
-                                Console.WriteLine(tuplo.getUniqueID());
                             }
                             duplicatedTuple.Remove(in_queue[0]);
                             duplicatedTuple.Remove(in_queue[0]);
@@ -280,7 +270,6 @@ public class opObject : MarshalByRefObject, IOperator
                             Console.WriteLine("Output from Operator:");
                             Console.WriteLine(outTuple.getUser());
                             Console.WriteLine("Tuples count until now: " + count.getCount());
-                            Console.WriteLine("UniqueID:    " + outTuple.getUniqueID());
                             Console.WriteLine("      ");
                             
                             in_queue.Remove(in_queue[0]);
@@ -369,12 +358,11 @@ public class opObject : MarshalByRefObject, IOperator
 
         class FILTER : operators
         {
-            public remoting_interfaces.Tuple doTweeters(remoting_interfaces.Tuple input_Tuple, int field_number, string condition, string value, int countID)
+            public remoting_interfaces.Tuple doTweeters(remoting_interfaces.Tuple input_Tuple, int field_number, string condition, string value)
             {
-                
                 List<string> tweeters = new List<string>();
 
-                remoting_interfaces.Tuple Tuple = new remoting_interfaces.Tuple(0, "", "", countID, "");
+                remoting_interfaces.Tuple Tuple = new remoting_interfaces.Tuple(0, "", "");
 
                 string[] tokens = { input_Tuple.getID().ToString(), input_Tuple.getUser(), input_Tuple.getURL() };
 
@@ -390,7 +378,6 @@ public class opObject : MarshalByRefObject, IOperator
                                         Tuple.setID(Int32.Parse(tokens[0]));
                                         Tuple.setUser(tokens[1]);
                                         Tuple.setURL(tokens[2]);
-                                        Tuple.setUniqueID(countID);
                                     }
                                     break;
                                 case ">":
@@ -399,7 +386,6 @@ public class opObject : MarshalByRefObject, IOperator
                                         Tuple.setID(Int32.Parse(tokens[0]));
                                         Tuple.setUser(tokens[1]);
                                         Tuple.setURL(tokens[2]);
-                                        Tuple.setUniqueID(countID);
                             }
                                     break;
                                 case "=":
@@ -408,7 +394,6 @@ public class opObject : MarshalByRefObject, IOperator
                                         Tuple.setID(Int32.Parse(tokens[0]));
                                         Tuple.setUser(tokens[1]);
                                         Tuple.setURL(tokens[2]);
-                                        Tuple.setUniqueID(countID);    
                             }
                                     break;
                                 default:
@@ -424,7 +409,6 @@ public class opObject : MarshalByRefObject, IOperator
                                 Tuple.setID(Int32.Parse(tokens[0]));
                                 Tuple.setUser(tokens[1]);
                                 Tuple.setURL(tokens[2]);
-                                Tuple.setUniqueID(countID);
                     }
                         }
                         //field_nember is the URLs
@@ -436,7 +420,6 @@ public class opObject : MarshalByRefObject, IOperator
                                 Tuple.setID(Int32.Parse(tokens[0]));
                                 Tuple.setUser(tokens[1]);
                                 Tuple.setURL(tokens[2]);
-                                Tuple.setUniqueID(countID);
                     }
                         }
                 return Tuple;
@@ -508,7 +491,7 @@ public class opObject : MarshalByRefObject, IOperator
         class UNIQ : operators
         {
             List<string> tuplos = new List<string>();
-            remoting_interfaces.Tuple output = new remoting_interfaces.Tuple(0, "", "", 0, "");
+            remoting_interfaces.Tuple output = new remoting_interfaces.Tuple(0, "", "");
 
             public remoting_interfaces.Tuple uniqTuple(remoting_interfaces.Tuple Tuple, int field_nember)
             {
@@ -519,7 +502,7 @@ public class opObject : MarshalByRefObject, IOperator
                     }
                     else
                     {
-                        output = new remoting_interfaces.Tuple(0, "", "", 0, "");
+                        output = new remoting_interfaces.Tuple(0, "", "");
                     }
                 return output;
             }
