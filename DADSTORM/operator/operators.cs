@@ -50,6 +50,7 @@ public class opObject : MarshalByRefObject, IOperator
         static string next_url = "null"; //url do proximo operador
         static string next_routing = "null"; //tipo de routing do operador downstream
         static public bool start = false;
+        static public bool freeze = false;
         static string operator_id;
         static string log_lvl;
         List<remoting_interfaces.Tuple> queue = new List<remoting_interfaces.Tuple>();
@@ -82,7 +83,7 @@ public class opObject : MarshalByRefObject, IOperator
             start = true;
             op_spec = op_spec_in;
             Console.WriteLine("Triggered");
-            puppet_obj.log(operator_id + " has started.");
+            puppet_obj.log(DateTime.Now + ":" + operator_id + " has started.");
 
             if (firstTime == 0)
             {
@@ -100,11 +101,12 @@ public class opObject : MarshalByRefObject, IOperator
 
         public void set_freeze()
         {
-            puppet_obj.log("Command on" + operator_id + ": Freeze");
+            puppet_obj.log(DateTime.Now + ":Command on" + operator_id + ": Freeze");
             Monitor.Enter(tLock);
             try
             {
                 Console.WriteLine("Operator frozen.");
+                freeze = true;
             }
             finally
             {
@@ -114,19 +116,20 @@ public class opObject : MarshalByRefObject, IOperator
 
         public void set_unfreeze()
         {
-            puppet_obj.log("Command" + operator_id + ": Unfreeze");
+            puppet_obj.log(DateTime.Now + ":Command" + operator_id + ": Unfreeze");
+            freeze = false;
             Monitor.Exit(tLock);
         }
 
         public void crash()
         {
-            puppet_obj.log("Command" + operator_id + ": Crash");
+            puppet_obj.log(DateTime.Now + ":Command" + operator_id + ": Crash");
             Environment.Exit(0);
         }
 
-        public void Wait(int time)
+        public void Interval(int time)
         {
-            puppet_obj.log("Command" + operator_id + ": Interval");
+            puppet_obj.log(DateTime.Now + ":Command" + operator_id + ": Interval");
             Monitor.Enter(tLock);
             try
             {
@@ -135,6 +138,19 @@ public class opObject : MarshalByRefObject, IOperator
             finally
             {
                 Monitor.Exit(tLock);
+            }
+        }
+
+        public void Status()
+        {
+            puppet_obj.log(DateTime.Now + ":Command" + operator_id + ": Status");
+            if (freeze)
+            {
+                Console.WriteLine("Current Status: Frozen");
+            }
+            else
+            {
+                Console.WriteLine("Current Status: Active");
             }
         }
 
@@ -283,7 +299,7 @@ public class opObject : MarshalByRefObject, IOperator
 
                         if (log_lvl.Equals("full"))
                         {
-                            puppet_obj.log("Sent Tuple to " + operator_id);
+                            puppet_obj.log(DateTime.Now + ":Sent Tuple to " + operator_id);
                         }
                         out_queue.Remove(out_queue[0]);
                    }

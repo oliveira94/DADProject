@@ -69,6 +69,8 @@ namespace remoting_interfaces
         void set_freeze();
         void set_unfreeze();
         void crash();
+        void Interval(int time);
+        void Status();
     }
     public interface IfileToOperator
     {

@@ -93,11 +93,11 @@ namespace puppet_master
                 string[] words = line.Split(' ');
 
                 if (line.StartsWith("Start")
-                      || line.StartsWith("freeze")
-                      || line.StartsWith("unfreeze")
-                      || line.StartsWith("crash")
-                      || line.StartsWith("interval")
-                      || line.StartsWith("wait"))
+                      || line.StartsWith("Freeze")
+                      || line.StartsWith("Unfreeze")
+                      || line.StartsWith("Crash")
+                      || line.StartsWith("Interval")
+                      || line.StartsWith("Wait"))
                 {
                     commands_from_file.Add(line);
                 }
@@ -242,17 +242,42 @@ namespace puppet_master
                         }
                     }
                 }
-                else if (command.Equals("freeze OP"))
+                else if (command.StartsWith("Freeze OP"))
                 {
 
+                    foreach (Operator op in op_list)
+                    {
+                        if (op.operator_id.Equals(words[1]))
+                        {
+                            string[] rep = op.address.Split(','); // dividimos os seus URls
+                            string url = rep[Int32.Parse(words[2])];
+                            dic[url].set_freeze();
+                        }
+                    }
                 }
-                else if (command.Equals("unfreeze OP"))
+                else if (command.StartsWith("Unfreeze OP"))
                 {
-
+                    foreach (Operator op in op_list)
+                    {
+                        if (op.operator_id.Equals(words[1]))
+                        {
+                            string[] rep = op.address.Split(','); // dividimos os seus URls
+                            string url = rep[Int32.Parse(words[2])];
+                            dic[url].set_unfreeze();
+                        }
+                    }
                 }
-                else if (command.Equals("crash OP"))
+                else if (command.StartsWith("Crash OP"))
                 {
-
+                    foreach (Operator op in op_list)
+                    {
+                        if (op.operator_id.Equals(words[1]))
+                        {
+                            string[] rep = op.address.Split(','); // dividimos os seus URls
+                            string url = rep[Int32.Parse(words[2])];
+                            dic[url].crash();
+                        }
+                    }
                 }
                 else if (command.StartsWith("Wait"))
                 {
@@ -260,7 +285,31 @@ namespace puppet_master
                 }
                 else if (command.StartsWith("Interval"))
                 {
-
+                    foreach (Operator op in op_list)
+                    {
+                        if (op.operator_id.Equals(words[1]))
+                        {
+                            string[] rep = op.address.Split(','); // dividimos os seus URls
+                            foreach (string url in rep)
+                            {
+                                dic[url].Interval(Int32.Parse(words[2]));
+                            }
+                        }
+                    }
+                }
+                else if (command.StartsWith("Status"))
+                {
+                    foreach (Operator op in op_list)
+                    {
+                        if (op.operator_id.Equals(words[1]))
+                        {
+                            string[] rep = op.address.Split(','); // dividimos os seus URls
+                            foreach (string url in rep)
+                            {
+                                dic[url].Status();
+                            }
+                        }
+                    }
                 }
             }
             catch (System.Net.Sockets.SocketException)
