@@ -18,8 +18,10 @@ namespace puppet_master
         static string loggin_level = "light"; //nivel de logging for defeito
         public delegate void RemoteAsyncDelegate(int rep_factor, string replica_URL, string whatoperator, string op_id); //irá apontar para a função a ser chamada assincronamente
         public delegate void RemoteAsyncDelegateSet_Start(string op_spec_in, int firstTime, string op_id, string logging_level);
+        public delegate void RemoteAsyncDelegateNext_Op(string url, string route);
         static AsyncCallback funcaoCallBack; //irá chamar uma função quando a função assincrona terminar
         static AsyncCallback funcaoCallBackSet_Start;
+        static AsyncCallback funcaoCallBackNext_Op;
         static Ipcs pcs_obj;
         static IOperator op_obj;
   
@@ -175,8 +177,11 @@ namespace puppet_master
                 string[] words = op_list[i].address.Split(','); //cria uma lista com os URLs de todos do operador atual
                 foreach (string url in words)
                 {
-                    
-                    dic[url].next_op(op_list[i + 1].address, op_list[i + 1].routing); //envia ao operador os URLs do operador downstream
+                    funcaoCallBackNext_Op = new AsyncCallback(OnExitNext_Op);//aponta para a função de retorno da função assincrona
+                    RemoteAsyncDelegateNext_Op dele = new RemoteAsyncDelegateNext_Op(dic[url].next_op);//aponta para a função a ser chamada assincronamente
+                    IAsyncResult result = dele.BeginInvoke(op_list[i + 1].address, op_list[i + 1].routing, funcaoCallBackSet_Start, null);
+
+                    //dic[url].next_op(op_list[i + 1].address, op_list[i + 1].routing); //envia ao operador os URLs do operador downstream
                 }
             }
 
@@ -279,6 +284,11 @@ namespace puppet_master
         }
 
         public static void OnExitSet_Start(IAsyncResult ar)
+        {
+
+        }
+
+        public static void OnExitNext_Op(IAsyncResult ar)
         {
 
         }

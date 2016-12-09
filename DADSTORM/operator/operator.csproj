@@ -36,7 +36,7 @@
       <HintPath>..\LibDADStorm.dll</HintPath>
     </Reference>
     <Reference Include="mylib">
-      <HintPath>..\mylib.dll</HintPath>
+      <HintPath>..\..\..\..\..\Documents\Visual Studio 2015\Projects\readDLL\mylib.dll</HintPath>
     </Reference>
     <Reference Include="mylib_nointerface">
       <HintPath>..\mylib_nointerface.dll</HintPath>
