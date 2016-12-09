@@ -200,6 +200,7 @@ public class opObject : MarshalByRefObject, IOperator
                             Console.WriteLine("ID: " + in_queue[0].getID());
                             Console.WriteLine("User: " + in_queue[0].getUser());
                             Console.WriteLine("URL: " + in_queue[0].getURL());
+                            Console.WriteLine("UniqueID: " + in_queue[0].getUniqueID());
                         }
 
                         if (words[0] == "FILTER")
@@ -212,6 +213,7 @@ public class opObject : MarshalByRefObject, IOperator
                             Console.WriteLine(outTuple.getID());
                             Console.WriteLine(outTuple.getUser());
                             Console.WriteLine(outTuple.getURL());
+                            Console.WriteLine(outTuple.getUniqueID());
                         }
                         if (words[0] == "CUSTOM")
                         {
@@ -221,9 +223,11 @@ public class opObject : MarshalByRefObject, IOperator
                             countID++;
                             foreach (string follower in Followers)
                             {
-                                Console.WriteLine("follower: " + follower);
+                                
                                 remoting_interfaces.Tuple Tuple = new remoting_interfaces.Tuple(0, follower, "", countID, "");//see this
+                                Console.WriteLine("follower: " + follower + "    Unique ID: " + Tuple.getUniqueID());
                                 out_queue.Add(Tuple);
+
                             }
 
                             in_queue.Remove(in_queue[0]);
@@ -237,6 +241,7 @@ public class opObject : MarshalByRefObject, IOperator
                                 out_queue.Add(outTuple);
                                 Console.WriteLine("Output from Operator:");
                                 Console.WriteLine(outTuple.getUser());
+                                Console.WriteLine(outTuple.getUniqueID());
                             }
                             in_queue.Remove(in_queue[0]);
                         }
@@ -251,6 +256,7 @@ public class opObject : MarshalByRefObject, IOperator
                                 Console.WriteLine(tuplo.getID());
                                 Console.WriteLine(tuplo.getUser());
                                 Console.WriteLine(tuplo.getURL());
+                                Console.WriteLine(tuplo.getUniqueID());
                             }
                             duplicatedTuple.Remove(in_queue[0]);
                             duplicatedTuple.Remove(in_queue[0]);
@@ -265,6 +271,7 @@ public class opObject : MarshalByRefObject, IOperator
                             Console.WriteLine("Output from Operator:");
                             Console.WriteLine(outTuple.getUser());
                             Console.WriteLine("Tuples count until now: " + count.getCount());
+                            Console.WriteLine("UniqueID:    " + outTuple.getUniqueID(););
                             Console.WriteLine("      ");
                             
                             in_queue.Remove(in_queue[0]);
