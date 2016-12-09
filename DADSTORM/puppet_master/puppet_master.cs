@@ -292,11 +292,21 @@ namespace puppet_master
     public class puppet_master_object : MarshalByRefObject, Ipuppet_master
     {
 
+        static object logLock = new object();
+
         public void log(string log_entry)
         {
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\diogo\Documents\GitHub\FindSomethingElse\DADSTORM\log.txt", true))
+            Monitor.Enter(logLock);
+            try
             {
-                file.WriteLine(log_entry);
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\diogo\Documents\GitHub\FindSomethingElse\DADSTORM\log.txt", true))
+                {
+                    file.WriteLine(log_entry);
+                }
+            }
+            finally
+            {
+                Monitor.Exit(logLock);
             }
             Console.WriteLine(log_entry);
         }
