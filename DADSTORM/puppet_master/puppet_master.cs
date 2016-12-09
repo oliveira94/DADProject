@@ -34,7 +34,7 @@ namespace puppet_master
         }
 
         static List<Operator> op_list = new List<Operator>(); //lista de todos os operadores
-        static List<IOperator> op_obj_list = new List<IOperator>();//lista de todos os objetos que existem nos operadores
+        static IDictionary<string, IOperator> dic; // dicionario com todos os objetos remotos criados em todas as replicas
         static List<string> commands_from_file = new List<string>();
 
         static private puppet_master_object pmo;
@@ -134,7 +134,19 @@ namespace puppet_master
                     }
                 }
             }
+
+            dic = new Dictionary<string, IOperator>();
+            foreach(Operator op in op_list) // são criados objetos em todas as replicas, depois são guardados no dicionario
+            {
+                string[] urls = op.address.Split(',');
+                foreach(string url in urls)
+                {
+                    op_obj = (IOperator)Activator.GetObject(typeof(IOperator), url);
+                    dic.Add(url, op_obj);
+                }
+            }
         }
+
 
         static public void create_replicas()
         {
@@ -158,8 +170,8 @@ namespace puppet_master
                 string[] words = op_list[i].address.Split(','); //cria uma lista com os URLs de todos do operador atual
                 foreach (string url in words)
                 {
-                    op_obj = (IOperator)Activator.GetObject(typeof(IOperator), url); //cria um objeto remoto na replica do operador atual
-                    op_obj.next_op(op_list[i + 1].address, op_list[i + 1].routing); //envia ao operador os URLs do operador downstream
+                    
+                    dic[url].next_op(op_list[i + 1].address, op_list[i + 1].routing); //envia ao operador os URLs do operador downstream
                 }
             }
 
@@ -198,12 +210,10 @@ namespace puppet_master
                         {
                             if (words[1].Equals("OP1"))// se o operador encontrado for o primeiro
                             {
-                                op_obj = (IOperator)Activator.GetObject(typeof(IOperator), routing(op.address, op.routing)); // faz o routing do primeiro operador
-
                                 funcaoCallBackSet_Start = new AsyncCallback(OnExitSet_Start);//aponta para a função de retorno da função assincrona
-                                RemoteAsyncDelegateSet_Start  dele = new RemoteAsyncDelegateSet_Start(op_obj.set_start);//aponta para a função a ser chamada assincronamente
+                                RemoteAsyncDelegateSet_Start dele = new RemoteAsyncDelegateSet_Start(dic[routing(op.address, op.routing)].set_start);//aponta para a função a ser chamada assincronamente
                                 IAsyncResult result = dele.BeginInvoke(op.operator_spec, 0, funcaoCallBackSet_Start, null);
-                                //op_obj.set_start(op.operator_spec, 0); //faz start na replica resultada do routing // FALTA ASSINCRONIA!!!                               
+                                //op_obj.set_start(op.operator_spec, 0); //faz start na replica resultada do routing                              
                             }
                             else // caso o operador encontrado não seja o primeiro
                             {
@@ -211,10 +221,9 @@ namespace puppet_master
                             
                                 foreach (string url in rep) //para cada URl das replicas do operador encontrado
                                 {
-                                    op_obj = (IOperator)Activator.GetObject(typeof(IOperator), url); // cria um objeto na replica
-
+                                    
                                     funcaoCallBackSet_Start = new AsyncCallback(OnExitSet_Start);//aponta para a função de retorno da função assincrona
-                                    RemoteAsyncDelegateSet_Start dele = new RemoteAsyncDelegateSet_Start(op_obj.set_start);//aponta para a função a ser chamada assincronamente
+                                    RemoteAsyncDelegateSet_Start dele = new RemoteAsyncDelegateSet_Start(dic[url].set_start);//aponta para a função a ser chamada assincronamente
                                     IAsyncResult result = dele.BeginInvoke(op.operator_spec, 1, funcaoCallBackSet_Start, null);
                                     //op_obj.set_start(op.operator_spec, 1); // fazemos start na replica                                   
                                 }
