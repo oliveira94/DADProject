@@ -111,7 +111,8 @@ namespace puppet_master
                       || line.StartsWith("Interval")
                       || line.StartsWith("Wait"))
                 {
-                    commands_from_file.Add(line);
+                    commands_from_file.Add(line); // adicioamos o comando à lista para impedir que ele seja executado antes das replicas estarem prontas
+
                 }
                 else if (line.StartsWith("%"))
                 {
@@ -191,8 +192,6 @@ namespace puppet_master
                     funcaoCallBackNext_Op = new AsyncCallback(OnExitNext_Op);//aponta para a função de retorno da função assincrona
                     RemoteAsyncDelegateNext_Op dele = new RemoteAsyncDelegateNext_Op(dic[url].next_op);//aponta para a função a ser chamada assincronamente
                     IAsyncResult result = dele.BeginInvoke(op_list[i + 1].address, op_list[i + 1].routing, funcaoCallBackSet_Start, null);
-
-                    //dic[url].next_op(op_list[i + 1].address, op_list[i + 1].routing); //envia ao operador os URLs do operador downstream
                 }
             }
 
@@ -230,10 +229,11 @@ namespace puppet_master
                     {
                         if (op.operator_id.Equals(words[1]))// se encontrarmos o operador especificado no comando
                         {
-                            if (words[1].Equals("OP1"))// se o operador encontrado for o primeiro
+                            if (words[1].Equals("OP1"))// se o operador encontrado for o primeiro, só queremos ativar uma replica
                             {
-                                funcaoCallBackSet_Start = new AsyncCallback(OnExitSet_Start);//aponta para a função de retorno da função assincrona
-                                RemoteAsyncDelegateSet_Start dele = new RemoteAsyncDelegateSet_Start(dic[routing(op.address, op.routing)].set_start);//aponta para a função a ser chamada assincronamente
+                                funcaoCallBackSet_Start = new AsyncCallback(OnExitSet_Start);
+                                RemoteAsyncDelegateSet_Start dele = new RemoteAsyncDelegateSet_Start(dic[routing(op.address, op.routing)].set_start);// procuramos no dicionario a réplica certa para ativar
+
                                 IAsyncResult result = dele.BeginInvoke(op.operator_spec, 0, op.operator_id,loggin_level, funcaoCallBackSet_Start, null);                             
                             }
                             else // caso o operador encontrado não seja o primeiro
@@ -242,8 +242,8 @@ namespace puppet_master
                             
                                 foreach (string url in rep) //para cada URl das replicas do operador encontrado
                                 {
-                                    funcaoCallBackSet_Start = new AsyncCallback(OnExitSet_Start);//aponta para a função de retorno da função assincrona
-                                    RemoteAsyncDelegateSet_Start dele = new RemoteAsyncDelegateSet_Start(dic[url].set_start);//aponta para a função a ser chamada assincronamente
+                                    funcaoCallBackSet_Start = new AsyncCallback(OnExitSet_Start);
+                                    RemoteAsyncDelegateSet_Start dele = new RemoteAsyncDelegateSet_Start(dic[url].set_start);// ativamos a replica atual do operador
                                     IAsyncResult result = dele.BeginInvoke(op.operator_spec, 1, op.operator_id,loggin_level, funcaoCallBackSet_Start, null);                              
                                 }
                             }
