@@ -16,7 +16,9 @@ namespace puppet_master
         static string semantics;
         static string loggin_level = "light"; //nivel de logging for defeito
         public delegate void RemoteAsyncDelegate(int rep_factor, string replica_URL, string whatoperator, string op_id); //irá apontar para a função a ser chamada assincronamente
+        public delegate void RemoteAsyncDelegateSet_Start(string op_spec_in, int firstTime);
         static AsyncCallback funcaoCallBack; //irá chamar uma função quando a função assincrona terminar
+        static AsyncCallback funcaoCallBackSet_Start;
         static Ipcs pcs_obj;
         static IOperator op_obj;
   
@@ -179,7 +181,11 @@ namespace puppet_master
                             if (words[1].Equals("OP1"))// se o operador encontrado for o primeiro
                             {
                                 op_obj = (IOperator)Activator.GetObject(typeof(IOperator), routing(op.address, op.routing)); // faz o routing do primeiro operador
-                                op_obj.set_start(op.operator_spec, 0); //faz start na replica resultada do routing // FALTA ASSINCRONIA!!!                               
+
+                                funcaoCallBackSet_Start = new AsyncCallback(OnExitSet_Start);//aponta para a função de retorno da função assincrona
+                                RemoteAsyncDelegateSet_Start  dele = new RemoteAsyncDelegateSet_Start(op_obj.set_start);//aponta para a função a ser chamada assincronamente
+                                IAsyncResult result = dele.BeginInvoke(op.operator_spec, 0, funcaoCallBackSet_Start, null);
+                                //op_obj.set_start(op.operator_spec, 0); //faz start na replica resultada do routing // FALTA ASSINCRONIA!!!                               
                             }
                             else // caso o operador encontrado não seja o primeiro
                             {
@@ -188,7 +194,11 @@ namespace puppet_master
                                 foreach (string url in rep) //para cada URl das replicas do operador encontrado
                                 {
                                     op_obj = (IOperator)Activator.GetObject(typeof(IOperator), url); // cria um objeto na replica
-                                    op_obj.set_start(op.operator_spec, 1); // fazemos start na replica                                   
+
+                                    funcaoCallBackSet_Start = new AsyncCallback(OnExitSet_Start);//aponta para a função de retorno da função assincrona
+                                    RemoteAsyncDelegateSet_Start dele = new RemoteAsyncDelegateSet_Start(op_obj.set_start);//aponta para a função a ser chamada assincronamente
+                                    IAsyncResult result = dele.BeginInvoke(op.operator_spec, 1, funcaoCallBackSet_Start, null);
+                                    //op_obj.set_start(op.operator_spec, 1); // fazemos start na replica                                   
                                 }
                             }
                             break;
@@ -230,6 +240,11 @@ namespace puppet_master
         public static void OnExit(IAsyncResult ar)
         {
              
+        }
+
+        public static void OnExitSet_Start(IAsyncResult ar)
+        {
+
         }
 
         public static void read_from_file()
