@@ -205,21 +205,25 @@ namespace puppet_master
                         }
                     }
                 }
-                else if (command.Equals("freeze OP1"))
+                else if (command.Equals("freeze OP"))
                 {
 
                 }
-                else if (command.Equals("unfreeze OP1"))
+                else if (command.Equals("unfreeze OP"))
                 {
 
                 }
-                else if (command.Equals("crash OP1"))
+                else if (command.Equals("crash OP"))
                 {
 
                 }
                 else if (command.StartsWith("Wait"))
                 {
                     Thread.Sleep(Int32.Parse(Regex.Match(words[1], @"\d+").Value));
+                }
+                else if (command.StartsWith("Interval"))
+                {
+
                 }
             }
             catch (System.Net.Sockets.SocketException)
