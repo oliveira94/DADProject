@@ -286,7 +286,11 @@ public class opObject : MarshalByRefObject, IOperator
             }
             else
             {
-                hashing(Int32.Parse(routing), tup, words.Length);
+                char[] p = { '(', ')' };
+                string[] value = routing.Split(p);
+                int rep = hashing(Int32.Parse(value[1]), tup, words.Length);
+                return words[rep];
+
             }
             return "error";
         }

@@ -1,5 +1,5 @@
 LoggingLevel full
 OP1 input ops tweeters.dat rep fact 2 routing primary address tcp://localhost:11000/op, tcp://localhost:11001/op operator spec FILTER 3,=,www.tecnico.ulisboa.pt
-OP2 input ops OP1 rep fact 2 routing primary address tcp://localhost:11002/op, tcp://localhost:11003/op operator spec CUSTOM mylib.dll,QueryFollowersFile,getFollowers 
+OP2 input ops OP1 rep fact 2 routing hashing(1) address tcp://localhost:11002/op, tcp://localhost:11003/op operator spec CUSTOM mylib.dll,QueryFollowersFile,getFollowers 
 Start OP1
 Start OP2

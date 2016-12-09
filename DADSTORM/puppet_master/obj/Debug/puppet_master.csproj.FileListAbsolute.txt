@@ -13,14 +13,6 @@
 \\Mac\Home\Desktop\GitHub\FindSomethingElse\DADSTORM\puppet_master\bin\Debug\remotig_interfaces.pdb
 \\Mac\Home\Desktop\GitHub\FindSomethingElse\DADSTORM\puppet_master\obj\Debug\puppet_master.exe
 \\Mac\Home\Desktop\GitHub\FindSomethingElse\DADSTORM\puppet_master\obj\Debug\puppet_master.pdb
-C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\puppet_master\bin\Debug\puppet_master.exe.config
-C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\puppet_master\bin\Debug\puppet_master.exe
-C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\puppet_master\bin\Debug\puppet_master.pdb
-C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\puppet_master\bin\Debug\remotig_interfaces.dll
-C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\puppet_master\bin\Debug\remotig_interfaces.pdb
-C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\puppet_master\obj\Debug\puppet_master.csprojResolveAssemblyReference.cache
-C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\puppet_master\obj\Debug\puppet_master.exe
-C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\puppet_master\obj\Debug\puppet_master.pdb
 \\Mac\Home\Desktop\GitHub\FindSomethingElse\DADSTORM\puppet_master\obj\Debug\puppet_master.csprojResolveAssemblyReference.cache
 C:\Users\diogo\Documents\GitHub\FindSomethingElse\DADSTORM\puppet_master\bin\Debug\puppet_master.exe.config
 C:\Users\diogo\Documents\GitHub\FindSomethingElse\DADSTORM\puppet_master\bin\Debug\puppet_master.exe
@@ -30,3 +22,11 @@ C:\Users\diogo\Documents\GitHub\FindSomethingElse\DADSTORM\puppet_master\bin\Deb
 C:\Users\diogo\Documents\GitHub\FindSomethingElse\DADSTORM\puppet_master\obj\Debug\puppet_master.csprojResolveAssemblyReference.cache
 C:\Users\diogo\Documents\GitHub\FindSomethingElse\DADSTORM\puppet_master\obj\Debug\puppet_master.exe
 C:\Users\diogo\Documents\GitHub\FindSomethingElse\DADSTORM\puppet_master\obj\Debug\puppet_master.pdb
+C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\puppet_master\bin\Debug\puppet_master.exe.config
+C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\puppet_master\bin\Debug\puppet_master.exe
+C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\puppet_master\bin\Debug\puppet_master.pdb
+C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\puppet_master\bin\Debug\remotig_interfaces.dll
+C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\puppet_master\bin\Debug\remotig_interfaces.pdb
+C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\puppet_master\obj\Debug\puppet_master.csprojResolveAssemblyReference.cache
+C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\puppet_master\obj\Debug\puppet_master.exe
+C:\Users\lj0se\Documents\GitHub\FindSomethingElse\DADSTORM\puppet_master\obj\Debug\puppet_master.pdb
